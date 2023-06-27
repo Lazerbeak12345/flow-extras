@@ -31,8 +31,6 @@ I've seen a lot of libraries like Qt and GTK accumulate hundreds of widgets over
 - [ ] `Navabble`
     - [ ] Accepts a table of callbacks, each returning window contents
     - [ ] requires a name
-- [ ] `List`
-    - [ ] Taken from sway-inv
 - [ ] `FakeTabbar`
     - [ ] A fake tabbar with identical API
 - [ ] `Pagnator`
