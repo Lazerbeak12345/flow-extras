@@ -5,8 +5,11 @@ _G.flow_extras = flow_extras
 
 local spacing = 0.25 -- TODO
 local function ThemableList(fields)
+	if type(fields.bgimg) == "boolean" and not fields.bgimg then
+		return gui.List(fields)
+	end
 	local col = gui.VBox{ spacing = spacing }
-	local bgimg = fields.bgimg or { "sway_list_bg.png" } -- TODO change filename
+	local bgimg = fields.bgimg or { "flow_extras_list_bg.png" } -- TODO change filename
 	if type(bgimg) ~= "table" then
 		bgimg = { bgimg }
 	end

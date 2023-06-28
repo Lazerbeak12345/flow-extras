@@ -48,7 +48,7 @@ describe("List", function ()
 					spacing = 0.25,
 					gui.HBox{
 						spacing = 0.25,
-						gui.Image{ w = 1, h = 1, bgimg = "sway_list_bg.png" }
+						gui.Image{ w = 1, h = 1, bgimg = "flow_extras_list_bg.png" }
 					},
 				},
 				gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1 }
@@ -230,7 +230,7 @@ describe("List", function ()
 							spacing = 0.25,
 							gui.HBox{
 								spacing = 0.25,
-								gui.Image{ h = 1, w = 1, bgimg = "sway_list_bg.png" }
+								gui.Image{ h = 1, w = 1, bgimg = "flow_extras_list_bg.png" }
 							}
 						},
 						gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1, starting_item_index = 0 }
@@ -266,7 +266,7 @@ describe("List", function ()
 							spacing = 0.25,
 							gui.HBox{
 								spacing = 0.25,
-								gui.Image{ h = 1, w = 1, bgimg = "sway_list_bg.png" }
+								gui.Image{ h = 1, w = 1, bgimg = "flow_extras_list_bg.png" }
 							}
 						},
 						gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1, starting_item_index = 0 }
@@ -293,7 +293,7 @@ describe("List", function ()
 					spacing = 0.25,
 					gui.HBox{
 						spacing = 0.25,
-						gui.Image{ h = 1, w = 1, bgimg = "sway_list_bg.png" }
+						gui.Image{ h = 1, w = 1, bgimg = "flow_extras_list_bg.png" }
 					}
 				},
 				gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1, starting_item_index = 100 }
@@ -306,7 +306,7 @@ describe("List", function ()
 						spacing = 0.25,
 						gui.HBox{
 							spacing = 0.25,
-							gui.Image{ h = 1, w = 1, bgimg = "sway_list_bg.png" }
+							gui.Image{ h = 1, w = 1, bgimg = "flow_extras_list_bg.png" }
 						}
 					},
 					gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1, starting_item_index = 101 }
