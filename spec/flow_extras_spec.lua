@@ -92,85 +92,86 @@ describe("List", function ()
 			gui.List{ inventory_location = "a", list_name = "b", w = 2, h = 3 }
 		}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 2, h = 3, bgimg = "c" })
 	end)
-	-- TODO group both remainder statements
-	it("displays a remainder line", function ()
-		assert.same(gui.HBox{
-			gui.Stack{
-				align_h = "center",
-				align_v = "center",
-				gui.VBox{
-					spacing = 0.25,
-					gui.HBox{
-						spacing = 0.25,
-						gui.Image{ w = 1, h = 1, bgimg = "c" },
-						gui.Image{ w = 1, h = 1, bgimg = "c" },
-						gui.Image{ w = 1, h = 1, bgimg = "c" }
-					},
-					gui.HBox{
-						spacing = 0.25,
-						gui.Image{ w = 1, h = 1, bgimg = "c" },
-						gui.Image{ w = 1, h = 1, bgimg = "c" },
-						gui.Image{ w = 1, h = 1, bgimg = "c" }
-					}
-				},
-				gui.List{ inventory_location = "a", list_name = "b", w = 3, h = 2 }
-			},
-			gui.VBox{
+	describe("remainders", function ()
+		it("can be rendered horizontally", function ()
+			assert.same(gui.HBox{
 				gui.Stack{
 					align_h = "center",
 					align_v = "center",
 					gui.VBox{
 						spacing = 0.25,
-						gui.Image{ w = 1, h = 1, bgimg = "c" },
-						gui.Image{ w = 1, h = 1, bgimg = "c" }
+						gui.HBox{
+							spacing = 0.25,
+							gui.Image{ w = 1, h = 1, bgimg = "c" },
+							gui.Image{ w = 1, h = 1, bgimg = "c" },
+							gui.Image{ w = 1, h = 1, bgimg = "c" }
+						},
+						gui.HBox{
+							spacing = 0.25,
+							gui.Image{ w = 1, h = 1, bgimg = "c" },
+							gui.Image{ w = 1, h = 1, bgimg = "c" },
+							gui.Image{ w = 1, h = 1, bgimg = "c" }
+						}
 					},
-					gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 2, starting_item_index = 6 }
-				}
-			},
-		}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 3, h = 2, remainder = 2, bgimg = "c" })
-	end)
-	it("supports vertical remainders", function ()
-		assert.same(gui.VBox{
-			gui.Stack{
-				align_h = "center",
-				align_v = "center",
+					gui.List{ inventory_location = "a", list_name = "b", w = 3, h = 2 }
+				},
 				gui.VBox{
-					spacing = 0.25,
-					gui.HBox{
-						spacing = 0.25,
-						gui.Image{ w = 1, h = 1, bgimg = "c" },
-						gui.Image{ w = 1, h = 1, bgimg = "c" },
-						gui.Image{ w = 1, h = 1, bgimg = "c" }
-					},
-					gui.HBox{
-						spacing = 0.25,
-						gui.Image{ w = 1, h = 1, bgimg = "c" },
-						gui.Image{ w = 1, h = 1, bgimg = "c" },
-						gui.Image{ w = 1, h = 1, bgimg = "c" }
+					gui.Stack{
+						align_h = "center",
+						align_v = "center",
+						gui.VBox{
+							spacing = 0.25,
+							gui.Image{ w = 1, h = 1, bgimg = "c" },
+							gui.Image{ w = 1, h = 1, bgimg = "c" }
+						},
+						gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 2, starting_item_index = 6 }
 					}
 				},
-				gui.List{ inventory_location = "a", list_name = "b", w = 3, h = 2 }
-			},
-			gui.HBox{
+			}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 3, h = 2, remainder = 2, bgimg = "c" })
+		end)
+		it("can be rendered vertically", function ()
+			assert.same(gui.VBox{
 				gui.Stack{
 					align_h = "center",
 					align_v = "center",
-					gui.HBox{
+					gui.VBox{
 						spacing = 0.25,
-						gui.Image{ w = 1, h = 1, bgimg = "c" },
-						gui.Image{ w = 1, h = 1, bgimg = "c" }
+						gui.HBox{
+							spacing = 0.25,
+							gui.Image{ w = 1, h = 1, bgimg = "c" },
+							gui.Image{ w = 1, h = 1, bgimg = "c" },
+							gui.Image{ w = 1, h = 1, bgimg = "c" }
+						},
+						gui.HBox{
+							spacing = 0.25,
+							gui.Image{ w = 1, h = 1, bgimg = "c" },
+							gui.Image{ w = 1, h = 1, bgimg = "c" },
+							gui.Image{ w = 1, h = 1, bgimg = "c" }
+						}
 					},
-					gui.List{ inventory_location = "a", list_name = "b", w = 2, h = 1, starting_item_index = 6 }
-				}
-			},
-		}, flow_extras.List{
-			inventory_location = "a",
-			list_name = "b",
-			w = 3, h = 2,
-			bgimg = "c",
-			remainder = 2,
-			remainder_v = true
-		})
+					gui.List{ inventory_location = "a", list_name = "b", w = 3, h = 2 }
+				},
+				gui.HBox{
+					gui.Stack{
+						align_h = "center",
+						align_v = "center",
+						gui.HBox{
+							spacing = 0.25,
+							gui.Image{ w = 1, h = 1, bgimg = "c" },
+							gui.Image{ w = 1, h = 1, bgimg = "c" }
+						},
+						gui.List{ inventory_location = "a", list_name = "b", w = 2, h = 1, starting_item_index = 6 }
+					}
+				},
+			}, flow_extras.List{
+				inventory_location = "a",
+				list_name = "b",
+				w = 3, h = 2,
+				bgimg = "c",
+				remainder = 2,
+				remainder_v = true
+			})
+		end)
 	end)
 	describe("alignments", function ()
 		it("works in vertical mode", function ()
