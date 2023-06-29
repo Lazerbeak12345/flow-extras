@@ -120,3 +120,5 @@ function flow_extras.List(fields)
 	end
 	return wrapper
 end
+
+--dofile(minetest.get_modpath("flow_extras") .. "/demo/init.lua")
