@@ -1,5 +1,7 @@
 # Flow Extras
 
+[![ContentDB](https://content.minetest.net/packages/lazerbeak12345/flow_extras/shields/downloads/)](https://content.minetest.net/packages/lazerbeak12345/flow_extras/)
+
 An experimental collection of extra widgets for [flow].
 
 > Not officially associated with flow
