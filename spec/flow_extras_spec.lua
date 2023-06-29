@@ -28,100 +28,86 @@ describe("List", function ()
 		assert.are.equal("function", type(flow_extras.List))
 	end)
 	it("renders a basic list when basic info is given", function ()
-		assert.same(gui.HBox{
-			gui.Stack{
-				align_h = "center",
-				align_v = "center",
-				gui.VBox{ spacing = 0.25, },
-				gui.List{ inventory_location = "a", list_name = "b", w = 0, h = 0 }
-			},
-			gui.Nil{}
+		assert.same(gui.Stack{
+			align_h = "center",
+			align_v = "center",
+			gui.VBox{ spacing = 0.25, },
+			gui.List{ inventory_location = "a", list_name = "b", w = 0, h = 0 }
 		}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 0, h = 0 })
 		-- Should be noted that 0,0 is not a valid size, but this should not care.
 	end)
 	it("has a default theme background", function ()
-		assert.same(gui.HBox{
-			gui.Stack{
-				align_h = "center",
-				align_v = "center",
-				gui.VBox{
+		assert.same(gui.Stack{
+			align_h = "center",
+			align_v = "center",
+			gui.VBox{
+				spacing = 0.25,
+				gui.HBox{
 					spacing = 0.25,
-					gui.HBox{
-						spacing = 0.25,
-						gui.Image{ w = 1, h = 1, bgimg = "flow_extras_list_bg.png" }
-					},
+					gui.Image{ w = 1, h = 1, bgimg = "flow_extras_list_bg.png" }
 				},
-				gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1 }
 			},
-			gui.Nil{}
+			gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1 }
 		}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 1, h = 1 })
 	end)
 	it("accepts a theme background string", function ()
-		assert.same(gui.HBox{
-			gui.Stack{
-				align_h = "center",
-				align_v = "center",
-				gui.VBox{
+		assert.same(gui.Stack{
+			align_h = "center",
+			align_v = "center",
+			gui.VBox{
+				spacing = 0.25,
+				gui.HBox{
 					spacing = 0.25,
-					gui.HBox{
-						spacing = 0.25,
-						gui.Image{ w = 1, h = 1, bgimg = "c" }
-					},
+					gui.Image{ w = 1, h = 1, bgimg = "c" }
 				},
-				gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1 }
 			},
-			gui.Nil{}
+			gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1 }
 		}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 1, h = 1, bgimg = "c" })
 	end)
 	it("accepts a listof theme backgrounds", function ()
-		assert.same(gui.HBox{
-			gui.Stack{
-				align_h = "center",
-				align_v = "center",
-				gui.VBox{
+		assert.same(gui.Stack{
+			align_h = "center",
+			align_v = "center",
+			gui.VBox{
+				spacing = 0.25,
+				gui.HBox{
 					spacing = 0.25,
-					gui.HBox{
-						spacing = 0.25,
-						gui.Image{ w = 1, h = 1, bgimg = "c" },
-						gui.Image{ w = 1, h = 1, bgimg = "d" },
-						gui.Image{ w = 1, h = 1, bgimg = "e" },
-						gui.Image{ w = 1, h = 1, bgimg = "c" },
-						gui.Image{ w = 1, h = 1, bgimg = "d" }
-					},
+					gui.Image{ w = 1, h = 1, bgimg = "c" },
+					gui.Image{ w = 1, h = 1, bgimg = "d" },
+					gui.Image{ w = 1, h = 1, bgimg = "e" },
+					gui.Image{ w = 1, h = 1, bgimg = "c" },
+					gui.Image{ w = 1, h = 1, bgimg = "d" }
 				},
-				gui.List{ inventory_location = "a", list_name = "b", w = 5, h = 1 }
 			},
-			gui.Nil{}
+			gui.List{ inventory_location = "a", list_name = "b", w = 5, h = 1 }
 		}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 5, h = 1, bgimg = { "c", "d", "e" } })
 	end)
 	it("works with two demensions", function ()
-		assert.same(gui.HBox{
-			gui.Stack{
-				align_h = "center",
-				align_v = "center",
-				gui.VBox{
+		assert.same(gui.Stack{
+			align_h = "center",
+			align_v = "center",
+			gui.VBox{
+				spacing = 0.25,
+				gui.HBox{
 					spacing = 0.25,
-					gui.HBox{
-						spacing = 0.25,
-						gui.Image{ w = 1, h = 1, bgimg = "c" },
-						gui.Image{ w = 1, h = 1, bgimg = "c" },
-					},
-					gui.HBox{
-						spacing = 0.25,
-						gui.Image{ w = 1, h = 1, bgimg = "c" },
-						gui.Image{ w = 1, h = 1, bgimg = "c" },
-					},
-					gui.HBox{
-						spacing = 0.25,
-						gui.Image{ w = 1, h = 1, bgimg = "c" },
-						gui.Image{ w = 1, h = 1, bgimg = "c" },
-					}
+					gui.Image{ w = 1, h = 1, bgimg = "c" },
+					gui.Image{ w = 1, h = 1, bgimg = "c" },
 				},
-				gui.List{ inventory_location = "a", list_name = "b", w = 2, h = 3 }
+				gui.HBox{
+					spacing = 0.25,
+					gui.Image{ w = 1, h = 1, bgimg = "c" },
+					gui.Image{ w = 1, h = 1, bgimg = "c" },
+				},
+				gui.HBox{
+					spacing = 0.25,
+					gui.Image{ w = 1, h = 1, bgimg = "c" },
+					gui.Image{ w = 1, h = 1, bgimg = "c" },
+				}
 			},
-			gui.Nil{}
+			gui.List{ inventory_location = "a", list_name = "b", w = 2, h = 3 }
 		}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 2, h = 3, bgimg = "c" })
 	end)
+	-- TODO group both remainder statements
 	it("displays a remainder line", function ()
 		assert.same(gui.HBox{
 			gui.Stack{
@@ -341,33 +327,30 @@ describe("List", function ()
 	end)
 	describe("disabling bgimg", function ()
 		it("can be done completely", function ()
-			assert.same(gui.HBox{
+			assert.same(
 				gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1 },
-				gui.Nil{}
-			}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 1, h = 1, bgimg = false })
+				flow_extras.List{ inventory_location = "a", list_name = "b", w = 1, h = 1, bgimg = false }
+			)
 		end)
 		it("can be done per image", function ()
-			assert.same(gui.HBox{
-				gui.Stack{
-					align_h = "center",
-					align_v = "center",
-					gui.VBox{
+			assert.same(gui.Stack{
+				align_h = "center",
+				align_v = "center",
+				gui.VBox{
+					spacing = 0.25,
+					gui.HBox{
 						spacing = 0.25,
-						gui.HBox{
-							spacing = 0.25,
-							gui.Spacer{ w = 1, h = 1, expand = false }
-						},
-						gui.HBox{
-							spacing = 0.25,
-							gui.Image{ w = 1, h = 1, bgimg = "c" }
-						}
+						gui.Spacer{ w = 1, h = 1, expand = false }
 					},
-					gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 2 },
+					gui.HBox{
+						spacing = 0.25,
+						gui.Image{ w = 1, h = 1, bgimg = "c" }
+					}
 				},
-				gui.Nil{}
+				gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 2 },
 			}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 1, h = 2, bgimg = { false, "c" } })
 		end)
 	end)
-	-- TODO
-	pending"reduce total output if there's no listring and no remainder"
+	-- TODO assert that unknown keywords pass through (for future compatibility)
+	-- TODO: reduce total output in the ThemableList
 end)

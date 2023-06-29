@@ -52,18 +52,28 @@ function flow_extras.List(fields)
 	local bgimg = fields.bgimg
 	local align_h = fields.align_h
 	local align_v = fields.align_v
+
+	local main_list = ThemableList{
+		inventory_location = inventory_location,
+		list_name = list_name,
+		w = w, h = h,
+		starting_item_index = starting_item_index,
+		bgimg = bgimg
+	}
+
+	local has_remainder = remainder and remainder > 0
+	local has_listring = #listring > 1
+
+	if (not has_remainder) and (not has_listring) then
+		return main_list
+	end
+
 	local wrapper = {
 		type = remainder_v and "vbox" or "hbox",
 		align_h = align_h,
 		align_v = align_v,
-		ThemableList{
-			inventory_location = inventory_location,
-			list_name = list_name,
-			w = w, h = h,
-			starting_item_index = starting_item_index,
-			bgimg = bgimg
-		},
-		(remainder and remainder > 0) and (
+		main_list,
+		has_remainder and (
 			remainder_v and gui.HBox{
 				align_h = remainder_align,
 				ThemableList{
@@ -85,7 +95,7 @@ function flow_extras.List(fields)
 			}
 		) or gui.Nil{}
 	}
-	if #listring > 0 then
+	if has_listring then
 		wrapper[#wrapper+1] = gui.Listring{
 			inventory_location = inventory_location,
 			list_name = list_name
