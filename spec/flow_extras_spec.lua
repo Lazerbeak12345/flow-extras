@@ -298,6 +298,4 @@ describe("List", function ()
 			}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 1, h = 2, bgimg = { false, "c" } })
 		end)
 	end)
-	-- TODO assert that unknown keywords pass through (for future compatibility)
-	-- TODO: reduce total output in the ThemableList
 end)
