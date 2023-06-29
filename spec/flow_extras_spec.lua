@@ -40,13 +40,7 @@ describe("List", function ()
 		assert.same(gui.Stack{
 			align_h = "center",
 			align_v = "center",
-			gui.VBox{
-				spacing = 0.25,
-				gui.HBox{
-					spacing = 0.25,
-					gui.Image{ w = 1, h = 1, bgimg = "flow_extras_list_bg.png" }
-				},
-			},
+			gui.Image{ w = 1, h = 1, bgimg = "flow_extras_list_bg.png" },
 			gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1 }
 		}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 1, h = 1 })
 	end)
@@ -54,13 +48,7 @@ describe("List", function ()
 		assert.same(gui.Stack{
 			align_h = "center",
 			align_v = "center",
-			gui.VBox{
-				spacing = 0.25,
-				gui.HBox{
-					spacing = 0.25,
-					gui.Image{ w = 1, h = 1, bgimg = "c" }
-				},
-			},
+			gui.Image{ w = 1, h = 1, bgimg = "c" },
 			gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1 }
 		}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 1, h = 1, bgimg = "c" })
 	end)
@@ -68,16 +56,13 @@ describe("List", function ()
 		assert.same(gui.Stack{
 			align_h = "center",
 			align_v = "center",
-			gui.VBox{
+			gui.HBox{
 				spacing = 0.25,
-				gui.HBox{
-					spacing = 0.25,
-					gui.Image{ w = 1, h = 1, bgimg = "c" },
-					gui.Image{ w = 1, h = 1, bgimg = "d" },
-					gui.Image{ w = 1, h = 1, bgimg = "e" },
-					gui.Image{ w = 1, h = 1, bgimg = "c" },
-					gui.Image{ w = 1, h = 1, bgimg = "d" }
-				},
+				gui.Image{ w = 1, h = 1, bgimg = "c" },
+				gui.Image{ w = 1, h = 1, bgimg = "d" },
+				gui.Image{ w = 1, h = 1, bgimg = "e" },
+				gui.Image{ w = 1, h = 1, bgimg = "c" },
+				gui.Image{ w = 1, h = 1, bgimg = "d" }
 			},
 			gui.List{ inventory_location = "a", list_name = "b", w = 5, h = 1 }
 		}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 5, h = 1, bgimg = { "c", "d", "e" } })
@@ -136,14 +121,8 @@ describe("List", function ()
 					align_v = "center",
 					gui.VBox{
 						spacing = 0.25,
-						gui.HBox{
-							spacing = 0.25,
-							gui.Image{ w = 1, h = 1, bgimg = "c" }
-						},
-						gui.HBox{
-							spacing = 0.25,
-							gui.Image{ w = 1, h = 1, bgimg = "c" }
-						}
+						gui.Image{ w = 1, h = 1, bgimg = "c" },
+						gui.Image{ w = 1, h = 1, bgimg = "c" }
 					},
 					gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 2, starting_item_index = 6 }
 				}
@@ -176,13 +155,10 @@ describe("List", function ()
 				gui.Stack{
 					align_h = "center",
 					align_v = "center",
-					gui.VBox{
+					gui.HBox{
 						spacing = 0.25,
-						gui.HBox{
-							spacing = 0.25,
-							gui.Image{ w = 1, h = 1, bgimg = "c" },
-							gui.Image{ w = 1, h = 1, bgimg = "c" }
-						}
+						gui.Image{ w = 1, h = 1, bgimg = "c" },
+						gui.Image{ w = 1, h = 1, bgimg = "c" }
 					},
 					gui.List{ inventory_location = "a", list_name = "b", w = 2, h = 1, starting_item_index = 6 }
 				}
@@ -212,13 +188,7 @@ describe("List", function ()
 					gui.Stack{
 						align_h = "center",
 						align_v = "center",
-						gui.VBox{
-							spacing = 0.25,
-							gui.HBox{
-								spacing = 0.25,
-								gui.Image{ h = 1, w = 1, bgimg = "flow_extras_list_bg.png" }
-							}
-						},
+						gui.Image{ h = 1, w = 1, bgimg = "flow_extras_list_bg.png" },
 						gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1, starting_item_index = 0 }
 					}
 				}
@@ -248,13 +218,7 @@ describe("List", function ()
 					gui.Stack{
 						align_h = "center",
 						align_v = "center",
-						gui.VBox{
-							spacing = 0.25,
-							gui.HBox{
-								spacing = 0.25,
-								gui.Image{ h = 1, w = 1, bgimg = "flow_extras_list_bg.png" }
-							}
-						},
+						gui.Image{ h = 1, w = 1, bgimg = "flow_extras_list_bg.png" },
 						gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1, starting_item_index = 0 }
 					}
 				}
@@ -275,26 +239,14 @@ describe("List", function ()
 			gui.Stack{
 				align_h = "center",
 				align_v = "center",
-				gui.VBox{
-					spacing = 0.25,
-					gui.HBox{
-						spacing = 0.25,
-						gui.Image{ h = 1, w = 1, bgimg = "flow_extras_list_bg.png" }
-					}
-				},
+				gui.Image{ h = 1, w = 1, bgimg = "flow_extras_list_bg.png" },
 				gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1, starting_item_index = 100 }
 			},
 			gui.VBox{
 				gui.Stack{
 					align_v = "center",
 					align_h = "center",
-					gui.VBox{
-						spacing = 0.25,
-						gui.HBox{
-							spacing = 0.25,
-							gui.Image{ h = 1, w = 1, bgimg = "flow_extras_list_bg.png" }
-						}
-					},
+					gui.Image{ h = 1, w = 1, bgimg = "flow_extras_list_bg.png" },
 					gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1, starting_item_index = 101 }
 				}
 			}
@@ -338,14 +290,8 @@ describe("List", function ()
 				align_v = "center",
 				gui.VBox{
 					spacing = 0.25,
-					gui.HBox{
-						spacing = 0.25,
-						gui.Spacer{ w = 1, h = 1, expand = false }
-					},
-					gui.HBox{
-						spacing = 0.25,
-						gui.Image{ w = 1, h = 1, bgimg = "c" }
-					}
+					gui.Spacer{ w = 1, h = 1, expand = false },
+					gui.Image{ w = 1, h = 1, bgimg = "c" }
 				},
 				gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 2 },
 			}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 1, h = 2, bgimg = { false, "c" } })

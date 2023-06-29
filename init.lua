@@ -15,20 +15,31 @@ local function ThemableList(fields)
 		bgimg = { bgimg }
 	end
 	local bgimg_idx = 1 + (fields.starting_item_index or 0)
-	for _=1, fields.h do
+	local w = fields.w
+	local h = fields.h
+	for _=1, h do
 		local row = gui.HBox{ spacing = spacing }
-		for _=1, fields.w do
+		for _=1, w do
 			if bgimg_idx > #bgimg then
 				bgimg_idx = 1
 			end
 			local the_image = bgimg[bgimg_idx]
 			assert(type(the_image) ~= "nil", "must not be a nil image " .. bgimg_idx)
-			row[#row+1] = (type(the_image) == "boolean" and not the_image) and
+			local item = (type(the_image) == "boolean" and not the_image) and
 				gui.Spacer{ w = 1, h = 1, expand = false } or
 				gui.Image{ w = 1, h = 1, bgimg = the_image }
 			bgimg_idx = bgimg_idx + 1
+			if w == 1 then
+				row = item
+			else
+				row[#row+1] = item
+			end
 		end
-		col[#col+1] = row
+		if h == 1 then
+			col = row
+		else
+			col[#col+1] = row
+		end
 	end
 	fields.bgimg = nil
 	return gui.Stack{
