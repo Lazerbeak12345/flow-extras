@@ -276,7 +276,6 @@ describe("List", function ()
 				gui.VBox{ spacing = 0.25 },
 				gui.List{ inventory_location = "a", list_name = "b", w = 0, h = 0 }
 			},
-			gui.Nil{},
 			gui.Listring{ inventory_location = "a", list_name = "b" },
 			gui.Listring{ inventory_location = "c", list_name = "d" },
 			gui.Listring{ inventory_location = "e", list_name = "f" }

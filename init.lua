@@ -106,8 +106,10 @@ function flow_extras.List(fields)
 		type = remainder_v and "vbox" or "hbox",
 		align_h = align_h,
 		align_v = align_v,
-		main_list,
-		has_remainder and (
+		main_list
+	}
+	if has_remainder then
+		wrapper[#wrapper+1] = (
 			(not remainder_align) and remainder_list or
 			remainder_v and gui.HBox{
 				align_h = remainder_align,
@@ -116,8 +118,8 @@ function flow_extras.List(fields)
 				align_v = remainder_align,
 				remainder_list
 			}
-		) or gui.Nil{}
-	}
+		)
+	end
 	if has_listring then
 		wrapper[#wrapper+1] = gui.Listring{
 			inventory_location = inventory_location,
