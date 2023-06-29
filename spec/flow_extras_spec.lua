@@ -116,6 +116,7 @@ describe("List", function ()
 					gui.List{ inventory_location = "a", list_name = "b", w = 3, h = 2 }
 				},
 				gui.VBox{
+					align_v = "d",
 					gui.Stack{
 						align_h = "center",
 						align_v = "center",
@@ -127,7 +128,15 @@ describe("List", function ()
 						gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 2, starting_item_index = 6 }
 					}
 				},
-			}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 3, h = 2, remainder = 2, bgimg = "c" })
+			}, flow_extras.List{
+				inventory_location = "a",
+				list_name = "b",
+				w = 3,
+				h = 2,
+				remainder = 2,
+				bgimg = "c",
+				remainder_align = "d" -- included so we can see if the alignment box is a vbox or an hbox
+			})
 		end)
 		it("can be rendered vertically", function ()
 			assert.same(gui.VBox{
@@ -152,6 +161,7 @@ describe("List", function ()
 					gui.List{ inventory_location = "a", list_name = "b", w = 3, h = 2 }
 				},
 				gui.HBox{
+					align_h = "d",
 					gui.Stack{
 						align_h = "center",
 						align_v = "center",
@@ -169,7 +179,8 @@ describe("List", function ()
 				w = 3, h = 2,
 				bgimg = "c",
 				remainder = 2,
-				remainder_v = true
+				remainder_v = true,
+				remainder_align = "d" -- included so we can see if the alignment box is a vbox or an hbox
 			})
 		end)
 	end)
@@ -243,13 +254,11 @@ describe("List", function ()
 				gui.Image{ h = 1, w = 1, bgimg = "flow_extras_list_bg.png" },
 				gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1, starting_item_index = 100 }
 			},
-			gui.VBox{
-				gui.Stack{
-					align_v = "center",
-					align_h = "center",
-					gui.Image{ h = 1, w = 1, bgimg = "flow_extras_list_bg.png" },
-					gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1, starting_item_index = 101 }
-				}
+			gui.Stack{
+				align_v = "center",
+				align_h = "center",
+				gui.Image{ h = 1, w = 1, bgimg = "flow_extras_list_bg.png" },
+				gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1, starting_item_index = 101 }
 			}
 		}, flow_extras.List{
 			starting_item_index = 100,
@@ -319,17 +328,15 @@ describe("List", function ()
 				},
 				gui.List{ inventory_location = "a", list_name = "b", w = 2, h = 2 }
 			},
-			gui.VBox{
-				gui.Stack{
-					align_h = "center",
-					align_v = "center",
-					gui.VBox{
-						spacing = 1,
-						gui.Image{ w = 1, h = 1, bgimg = "flow_extras_list_bg.png" },
-						gui.Image{ w = 1, h = 1, bgimg = "flow_extras_list_bg.png" }
-					},
-					gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 2, starting_item_index = 4 }
-				}
+			gui.Stack{
+				align_h = "center",
+				align_v = "center",
+				gui.VBox{
+					spacing = 1,
+					gui.Image{ w = 1, h = 1, bgimg = "flow_extras_list_bg.png" },
+					gui.Image{ w = 1, h = 1, bgimg = "flow_extras_list_bg.png" }
+				},
+				gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 2, starting_item_index = 4 }
 			}
 		}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 2, h = 2, remainder = 2, spacing = 1 })
 	end)

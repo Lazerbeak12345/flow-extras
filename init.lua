@@ -82,32 +82,39 @@ function flow_extras.List(fields)
 		return main_list
 	end
 
+	local remainder_list
+	if has_remainder then
+		remainder_list = remainder_v and
+			ThemableList{
+				inventory_location = inventory_location,
+				list_name = list_name,
+				w = remainder, h = 1,
+				starting_item_index = (w * h) + (starting_item_index or 0),
+				bgimg = bgimg,
+				spacing = spacing
+			} or ThemableList{
+				inventory_location = inventory_location,
+				list_name = list_name,
+				w = 1, h = remainder,
+				starting_item_index = (w * h) + (starting_item_index or 0),
+				bgimg = bgimg,
+				spacing = spacing
+			}
+	end
+
 	local wrapper = {
 		type = remainder_v and "vbox" or "hbox",
 		align_h = align_h,
 		align_v = align_v,
 		main_list,
 		has_remainder and (
+			(not remainder_align) and remainder_list or
 			remainder_v and gui.HBox{
 				align_h = remainder_align,
-				ThemableList{
-					inventory_location = inventory_location,
-					list_name = list_name,
-					w = remainder, h = 1,
-					starting_item_index = (w * h) + (starting_item_index or 0),
-					bgimg = bgimg,
-					spacing = spacing
-				}
+				remainder_list
 			} or gui.VBox{
 				align_v = remainder_align,
-				ThemableList{
-					inventory_location = inventory_location,
-					list_name = list_name,
-					w = 1, h = remainder,
-					starting_item_index = (w * h) + (starting_item_index or 0),
-					bgimg = bgimg,
-					spacing = spacing
-				}
+				remainder_list
 			}
 		) or gui.Nil{}
 	}
