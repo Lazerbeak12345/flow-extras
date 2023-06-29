@@ -84,23 +84,15 @@ function flow_extras.List(fields)
 
 	local remainder_list
 	if has_remainder then
-		remainder_list = (
-			remainder_v and ThemableList{
-				inventory_location = inventory_location,
-				list_name = list_name,
-				w = remainder, h = 1,
-				starting_item_index = (w * h) + (starting_item_index or 0),
-				bgimg = bgimg,
-				spacing = spacing
-			} or ThemableList{
-				inventory_location = inventory_location,
-				list_name = list_name,
-				w = 1, h = remainder,
-				starting_item_index = (w * h) + (starting_item_index or 0),
-				bgimg = bgimg,
-				spacing = spacing
-			}
-		)
+		remainder_list = ThemableList{
+			inventory_location = inventory_location,
+			list_name = list_name,
+			w = remainder_v and remainder or 1,
+			h = remainder_v and 1         or remainder,
+			starting_item_index = (w * h) + (starting_item_index or 0),
+			bgimg = bgimg,
+			spacing = spacing
+		}
 	end
 
 	local wrapper = {
