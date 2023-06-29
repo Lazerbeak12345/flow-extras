@@ -41,3 +41,15 @@ I've seen a lot of libraries like Qt and GTK accumulate hundreds of widgets over
     - [ ] behave like breakpoints from the CSS library Bootstrap
 - [ ] Each type of for loop as a map-like function
 - [ ] `{Widget,table}[][] -> WidgetArgs[]`
+
+## Legal
+
+### Code
+
+See `./LICENSE`
+
+### Media
+
+#### Images
+
+- `flow_extras_list_bg.png`: renamed from `gui_hb_bg.png`, a texture by BlockMen (CC BY-SA 3.0)
