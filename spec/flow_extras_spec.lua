@@ -13,7 +13,7 @@ minetest.get_translator = ident(ident)
 _G.minetest = minetest
 dofile"../flow/init.lua"
 dofile"init.lua"
-local flow_extras, describe, it, assert, flow = flow_extras, describe, it, assert, flow
+local flow_extras, describe, it, assert, flow, pending = flow_extras, describe, it, assert, flow, pending
 local gui = flow.widgets
 describe("*basics*", function ()
 	it("doesn't error out when loading init.lua", function ()
@@ -339,4 +339,35 @@ describe("List", function ()
 			listring = { { inventory_location = "c", list_name = "d" }, { inventory_location = "e", list_name = "f" } }
 		})
 	end)
+	describe("disabling bgimg", function ()
+		it("can be done completely", function ()
+			assert.same(gui.HBox{
+				gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1 },
+				gui.Nil{}
+			}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 1, h = 1, bgimg = false })
+		end)
+		it("can be done per image", function ()
+			assert.same(gui.HBox{
+				gui.Stack{
+					align_h = "center",
+					align_v = "center",
+					gui.VBox{
+						spacing = 0.25,
+						gui.HBox{
+							spacing = 0.25,
+							gui.Spacer{ w = 1, h = 1, expand = false }
+						},
+						gui.HBox{
+							spacing = 0.25,
+							gui.Image{ w = 1, h = 1, bgimg = "c" }
+						}
+					},
+					gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 2 },
+				},
+				gui.Nil{}
+			}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 1, h = 2, bgimg = { false, "c" } })
+		end)
+	end)
+	-- TODO
+	pending"reduce total output if there's no listring and no remainder"
 end)

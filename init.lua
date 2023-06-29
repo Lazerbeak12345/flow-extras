@@ -6,6 +6,7 @@ _G.flow_extras = flow_extras
 local spacing = 0.25 -- TODO
 local function ThemableList(fields)
 	if type(fields.bgimg) == "boolean" and not fields.bgimg then
+		fields.bgimg = nil
 		return gui.List(fields)
 	end
 	local col = gui.VBox{ spacing = spacing }
@@ -21,8 +22,10 @@ local function ThemableList(fields)
 				bgimg_idx = 1
 			end
 			local the_image = bgimg[bgimg_idx]
-			assert(the_image, "must not be a nil image " .. bgimg_idx)
-			row[#row+1] = gui.Image{ w = 1, h = 1, bgimg = the_image }
+			assert(type(the_image) ~= "nil", "must not be a nil image " .. bgimg_idx)
+			row[#row+1] = (type(the_image) == "boolean" and not the_image) and
+				gui.Spacer{ w = 1, h = 1, expand = false } or
+				gui.Image{ w = 1, h = 1, bgimg = the_image }
 			bgimg_idx = bgimg_idx + 1
 		end
 		col[#col+1] = row
