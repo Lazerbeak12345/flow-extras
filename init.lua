@@ -3,8 +3,9 @@ local gui = flow.widgets
 local flow_extras = {}
 _G.flow_extras = flow_extras
 
-local spacing = 0.25 -- TODO
 local function ThemableList(fields)
+	local spacing = fields.spacing or 0.25
+	fields.spacing = nil
 	if type(fields.bgimg) == "boolean" and not fields.bgimg then
 		fields.bgimg = nil
 		return gui.List(fields)
@@ -63,13 +64,15 @@ function flow_extras.List(fields)
 	local bgimg = fields.bgimg
 	local align_h = fields.align_h
 	local align_v = fields.align_v
+	local spacing = fields.spacing
 
 	local main_list = ThemableList{
 		inventory_location = inventory_location,
 		list_name = list_name,
 		w = w, h = h,
 		starting_item_index = starting_item_index,
-		bgimg = bgimg
+		bgimg = bgimg,
+		spacing = spacing
 	}
 
 	local has_remainder = remainder and remainder > 0
@@ -92,7 +95,8 @@ function flow_extras.List(fields)
 					list_name = list_name,
 					w = remainder, h = 1,
 					starting_item_index = (w * h) + (starting_item_index or 0),
-					bgimg = bgimg
+					bgimg = bgimg,
+					spacing = spacing
 				}
 			} or gui.VBox{
 				align_v = remainder_align,
@@ -101,7 +105,8 @@ function flow_extras.List(fields)
 					list_name = list_name,
 					w = 1, h = remainder,
 					starting_item_index = (w * h) + (starting_item_index or 0),
-					bgimg = bgimg
+					bgimg = bgimg,
+					spacing = spacing
 				}
 			}
 		) or gui.Nil{}

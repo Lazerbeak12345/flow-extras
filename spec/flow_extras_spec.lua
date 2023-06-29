@@ -298,4 +298,39 @@ describe("List", function ()
 			}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 1, h = 2, bgimg = { false, "c" } })
 		end)
 	end)
+	it("supports spacing variables", function ()
+		-- NOTE: we didn't change the Style attribute of the list, because that's global. We assume you do that elsewhere
+		assert.same(gui.HBox{
+			gui.Stack{
+				align_h = "center",
+				align_v = "center",
+				gui.VBox{
+					spacing = 1,
+					gui.HBox{
+						spacing = 1,
+						gui.Image{ w = 1, h = 1, bgimg = "flow_extras_list_bg.png" },
+						gui.Image{ w = 1, h = 1, bgimg = "flow_extras_list_bg.png" }
+					},
+					gui.HBox{
+						spacing = 1,
+						gui.Image{ w = 1, h = 1, bgimg = "flow_extras_list_bg.png" },
+						gui.Image{ w = 1, h = 1, bgimg = "flow_extras_list_bg.png" }
+					}
+				},
+				gui.List{ inventory_location = "a", list_name = "b", w = 2, h = 2 }
+			},
+			gui.VBox{
+				gui.Stack{
+					align_h = "center",
+					align_v = "center",
+					gui.VBox{
+						spacing = 1,
+						gui.Image{ w = 1, h = 1, bgimg = "flow_extras_list_bg.png" },
+						gui.Image{ w = 1, h = 1, bgimg = "flow_extras_list_bg.png" }
+					},
+					gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 2, starting_item_index = 4 }
+				}
+			}
+		}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 2, h = 2, remainder = 2, spacing = 1 })
+	end)
 end)
