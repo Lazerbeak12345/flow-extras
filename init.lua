@@ -82,9 +82,14 @@ function flow_extras.List(fields)
 		return main_list
 	end
 
-	local remainder_list
+	local wrapper = {
+		type = remainder_v and "vbox" or "hbox",
+		align_h = align_h,
+		align_v = align_v,
+		main_list
+	}
 	if has_remainder then
-		remainder_list = ThemableList{
+		local remainder_list = ThemableList{
 			inventory_location = inventory_location,
 			list_name = list_name,
 			w = remainder_v and remainder or 1,
@@ -93,15 +98,6 @@ function flow_extras.List(fields)
 			bgimg = bgimg,
 			spacing = spacing
 		}
-	end
-
-	local wrapper = {
-		type = remainder_v and "vbox" or "hbox",
-		align_h = align_h,
-		align_v = align_v,
-		main_list
-	}
-	if has_remainder then
 		wrapper[#wrapper+1] = (
 			(not remainder_align) and remainder_list or
 			remainder_v and gui.HBox{
