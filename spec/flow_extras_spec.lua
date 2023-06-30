@@ -5,11 +5,16 @@ local function ident(v)
 	end
 end
 local minetest = {
-	register_on_player_receive_fields = nilfn, register_on_leaveplayer = nilfn, get_modpath = nilfn,
+	register_on_player_receive_fields = nilfn, register_on_leaveplayer = nilfn,
 	register_chatcommand = nilfn
 }
 minetest.is_singleplayer = ident(true)
 minetest.get_translator = ident(ident)
+function minetest.get_modpath(modname)
+	if modname == "flow" then return "../flow" end
+	assert(modname == "flow_extras", "modname must be flow_extras. was " .. modname)
+	return "."
+end
 _G.minetest = minetest
 dofile"../flow/init.lua"
 dofile"init.lua"
