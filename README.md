@@ -7,6 +7,18 @@ An experimental collection of extra widgets for [flow].
 > Not officially associated with flow
 
 [flow]: https://github.com/luk3yx/minetest-flow
+
+## Docs
+
+### Widgets
+
+TODO
+
+### Textures
+
+- `flow_extras_list_bg.png` is the default background for all list slots rendered by `flow_extras.List`
+- `flow_extras_list_inactive.png` is availiable for use in situations (like craft recepies) where you need a deactivated "List".
+
 ## Rules
 
 I've seen a lot of libraries like Qt and GTK accumulate hundreds of widgets over the years. I'd like to slow that process down here.
