@@ -345,3 +345,234 @@ describe("List", function ()
 		}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 2, h = 2, remainder = 2, spacing = 1 })
 	end)
 end)
+describe("Grid", function ()
+	it("is a function on flow_extras", function ()
+		assert.are.equal("function", type(flow_extras.Grid))
+	end)
+	describe("returns gui.Nil{} when zero", function ()
+		it("h", function ()
+			assert.are.same(gui.Nil{}, flow_extras.Grid{ w = 1, h = 0, gui.Nil{} })
+		end)
+		it("w", function ()
+			assert.are.same(gui.Nil{}, flow_extras.Grid{ w = 0, h = 1, gui.Nil{} })
+		end)
+	end)
+	it("wraps single items", function ()
+		assert.are.same(gui.VBox{
+			gui.Label{ label = "a" }
+		}, flow_extras.Grid{
+			w = 1, h = 1,
+			gui.Label{ label = "a" }
+		})
+	end)
+	describe("error cases", function ()
+		it("requires a height", function ()
+			assert.has.errors(function ()
+				flow_extras.Grid{ w = 0 }
+			end)
+		end)
+		it("requires a width", function ()
+			assert.has.errors(function ()
+				flow_extras.Grid{ h = 0 }
+			end)
+		end)
+		it("requires a width and a height", function ()
+			assert.has.errors(function ()
+				flow_extras.Grid{}
+			end)
+		end)
+	end)
+	describe("render directions", function ()
+		it("can render vertical", function ()
+			assert.are.same(gui.VBox{
+				gui.Label{ label = "a" },
+				gui.Label{ label = "b" },
+				gui.Label{ label = "c" }
+			}, flow_extras.Grid{
+				w = 1, h = 3,
+				gui.Label{ label = "a" },
+				gui.Label{ label = "b" },
+				gui.Label{ label = "c" }
+			})
+		end)
+		it("can render horizontal", function ()
+			assert.are.same(gui.HBox{
+				gui.Label{ label = "a" },
+				gui.Label{ label = "b" },
+				gui.Label{ label = "c" }
+			}, flow_extras.Grid{
+				w = 3, h = 1,
+				gui.Label{ label = "a" },
+				gui.Label{ label = "b" },
+				gui.Label{ label = "c" }
+			})
+		end)
+		it("can render vertical and horizontal", function ()
+			assert.are.same(gui.VBox{
+				gui.HBox{
+					gui.Label{ label = "a" },
+					gui.Label{ label = "b" },
+				},
+				gui.HBox{
+					gui.Label{ label = "c" },
+					gui.Label{ label = "d" }
+				}
+			}, flow_extras.Grid{
+				w = 2, h = 2,
+				gui.Label{ label = "a" },
+				gui.Label{ label = "b" },
+				gui.Label{ label = "c" },
+				gui.Label{ label = "d" }
+			})
+		end)
+	end)
+	describe("callback children", function ()
+		it("accepts a callback to get children by index", function ()
+			assert.are.same(gui.VBox{
+				gui.Label{ label = "asdf 1" },
+				gui.Label{ label = "asdf 2" },
+				gui.Label{ label = "asdf 3" }
+			}, flow_extras.Grid{
+				w = 1, h = 3,
+				children_by_index = function (index)
+					return gui.Label{ label = "asdf " .. index }
+				end
+			})
+		end)
+		it("protects against nil items index", function ()
+			assert.has.errors(function ()
+				flow_extras.Grid{
+					w = 1, h = 1,
+					children_by_index = nilfn
+				}
+			end)
+		end)
+		it("accepts a callback to get children by coords", function ()
+			assert.are.same(gui.VBox{
+				gui.HBox{
+					gui.Label{ label = "blah 1,1" },
+					gui.Label{ label = "blah 2,1" }
+				},
+				gui.HBox{
+					gui.Label{ label = "blah 1,2" },
+					gui.Label{ label = "blah 2,2" }
+				}
+			}, flow_extras.Grid{
+				w = 2, h = 2,
+				children_by_coords = function (x, y)
+					return gui.Label{ label = "blah " .. x .. "," .. y }
+				end
+			})
+		end)
+		it("protects against nil items coords", function ()
+			assert.has.errors(function ()
+				flow_extras.Grid{
+					w = 1, h = 1,
+					children_by_coords = nilfn
+				}
+			end)
+		end)
+	end)
+	describe("wrapper settings", function ()
+		it("can be adjusted on col", function ()
+			assert.are.same(gui.VBox{
+				a = 1,
+				gui.Label{ label = "a" },
+				gui.Label{ label = "b" }
+			}, flow_extras.Grid{
+				w = 1, h = 2,
+				VBox = function (children)
+					children.a = 1
+					return gui.VBox(children)
+				end,
+				gui.Label{ label = "a" },
+				gui.Label{ label = "b" }
+			})
+		end)
+		it("can be adjusted on row", function ()
+			assert.are.same(gui.HBox{
+				a = 1,
+				gui.Label{ label = "a" },
+				gui.Label{ label = "b" }
+			}, flow_extras.Grid{
+				w = 2, h = 1,
+				HBox = function (children)
+					children.a = 1
+					return gui.HBox(children)
+				end,
+				gui.Label{ label = "a" },
+				gui.Label{ label = "b" }
+			})
+		end)
+		it("can be adjusted on both", function ()
+			assert.are.same(gui.VBox{
+				a = 1,
+				gui.HBox{
+					b = 4,
+					gui.Label{ label = "a" },
+					gui.Label{ label = "b" }
+				},
+				gui.HBox{
+					b = 4,
+					gui.Label{ label = "c" },
+					gui.Label{ label = "d" }
+				}
+			}, flow_extras.Grid{
+				w = 2, h = 2,
+				VBox = function (children)
+					children.a = 1
+					return gui.VBox(children)
+				end,
+				HBox = function (children)
+					children.b = 4
+					return gui.HBox(children)
+				end,
+				gui.Label{ label = "a" },
+				gui.Label{ label = "b" },
+				gui.Label{ label = "c" },
+				gui.Label{ label = "d" }
+			})
+		end)
+	end)
+	describe("trimming", function ()
+		describe("height", function ()
+			it("on normal case", function ()
+				assert.are.same(gui.VBox{
+					gui.Label{ label = "a" },
+					gui.Label{ label = "b" },
+					gui.Label{ label = "c" }
+				}, flow_extras.Grid{
+					w = 1, h = 3,
+					gui.Label{ label = "a" },
+					gui.Label{ label = "b" },
+					gui.Label{ label = "c" },
+					gui.Label{ label = "d" }
+				})
+			end)
+			it("1 by 1", function ()
+				assert.are.same(gui.VBox{
+					gui.Label{ label = "a" }
+				}, flow_extras.Grid{
+					w = 1, h = 1,
+					gui.Label{ label = "a" },
+					gui.Label{ label = "b" },
+					gui.Label{ label = "c" },
+					gui.Label{ label = "d" }
+				})
+			end)
+		end)
+		it("width on normal case", function ()
+			assert.are.same(gui.HBox{
+				gui.Label{ label = "a" },
+				gui.Label{ label = "b" },
+				gui.Label{ label = "c" }
+			}, flow_extras.Grid{
+				w = 3, h = 1,
+				gui.Label{ label = "a" },
+				gui.Label{ label = "b" },
+				gui.Label{ label = "c" },
+				gui.Label{ label = "d" }
+			})
+		end)
+	end)
+end)
