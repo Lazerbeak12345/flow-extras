@@ -20,6 +20,16 @@ dofile"../flow/init.lua"
 dofile"init.lua"
 local flow_extras, describe, it, assert, flow, pending = flow_extras, describe, it, assert, flow, pending
 local gui = flow.widgets
+local function debug(...)
+	for _, item in ipairs{ ... } do
+		print"{"
+		for key, value in pairs(item) do
+			print("", key, " = ", value)
+		end
+		print"}"
+	end
+	return ...
+end
 describe("*basics*", function ()
 	it("doesn't error out when loading init.lua", function ()
 		assert(true, "by the time it got here it would have failed if it didn't work")
@@ -36,9 +46,9 @@ describe("List", function ()
 		assert.same(gui.Stack{
 			align_h = "center",
 			align_v = "center",
-			gui.VBox{ spacing = 0.25, },
-			gui.List{ inventory_location = "a", list_name = "b", w = 0, h = 0 }
-		}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 0, h = 0 })
+			gui.Image{ bgimg = "flow_extras_list_bg.png", w = 1, h = 1 },
+			gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1 }
+		}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 1, h = 1 })
 		-- Should be noted that 0,0 is not a valid size, but this should not care.
 	end)
 	it("has a default theme background", function ()
@@ -197,8 +207,8 @@ describe("List", function ()
 				gui.Stack{
 					align_h = "center",
 					align_v = "center",
-					gui.VBox{ spacing = 0.25, },
-					gui.List{ inventory_location = "a", list_name = "b", w = 0, h = 0 }
+					gui.Image{ bgimg = "flow_extras_list_bg.png", w = 1, h = 1 },
+					gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1 }
 				},
 				gui.HBox{
 					align_h = "e",
@@ -206,13 +216,13 @@ describe("List", function ()
 						align_h = "center",
 						align_v = "center",
 						gui.Image{ h = 1, w = 1, bgimg = "flow_extras_list_bg.png" },
-						gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1, starting_item_index = 0 }
+						gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1, starting_item_index = 1 }
 					}
 				}
 			}, flow_extras.List{
 				inventory_location = "a",
 				list_name = "b",
-				w = 0, h = 0,
+				w = 1, h = 1,
 				remainder_v = true,
 				align_h = "c",
 				align_v = "d",
@@ -227,8 +237,8 @@ describe("List", function ()
 				gui.Stack{
 					align_h = "center",
 					align_v = "center",
-					gui.VBox{ spacing = 0.25, },
-					gui.List{ inventory_location = "a", list_name = "b", w = 0, h = 0 }
+					gui.Image{ h = 1, w = 1, bgimg = "flow_extras_list_bg.png" },
+					gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1 }
 				},
 				gui.VBox{
 					align_v = "e",
@@ -236,13 +246,13 @@ describe("List", function ()
 						align_h = "center",
 						align_v = "center",
 						gui.Image{ h = 1, w = 1, bgimg = "flow_extras_list_bg.png" },
-						gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1, starting_item_index = 0 }
+						gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1, starting_item_index = 1 }
 					}
 				}
 			}, flow_extras.List{
 				inventory_location = "a",
 				list_name = "b",
-				w = 0, h = 0,
+				w = 1, h = 1,
 				remainder_v = false,
 				align_h = "c",
 				align_v = "d",
@@ -274,12 +284,12 @@ describe("List", function ()
 		})
 	end)
 	it("has listring support", function ()
-		assert.same(gui.HBox{
+		assert.are.same(gui.HBox{
 			gui.Stack{
 				align_h = "center",
 				align_v = "center",
-				gui.VBox{ spacing = 0.25 },
-				gui.List{ inventory_location = "a", list_name = "b", w = 0, h = 0 }
+				gui.Image{ w = 1, h = 1, bgimg = "flow_extras_list_bg.png" },
+				gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1 }
 			},
 			gui.Listring{ inventory_location = "a", list_name = "b" },
 			gui.Listring{ inventory_location = "c", list_name = "d" },
@@ -287,7 +297,7 @@ describe("List", function ()
 		}, flow_extras.List{
 			inventory_location = "a",
 			list_name = "b",
-			w = 0, h = 0,
+			w = 1, h = 1,
 			listring = { { inventory_location = "c", list_name = "d" }, { inventory_location = "e", list_name = "f" } }
 		})
 	end)
@@ -357,9 +367,9 @@ describe("Grid", function ()
 			assert.are.same(gui.Nil{}, flow_extras.Grid{ w = 0, h = 1, gui.Nil{} })
 		end)
 	end)
-	it("wraps single items", function ()
-		assert.are.same(gui.VBox{
-			gui.Label{ label = "a" }
+	it("does not wrap single items", function ()
+		assert.are.same(gui.Label{
+			label = "a"
 		}, flow_extras.Grid{
 			w = 1, h = 1,
 			gui.Label{ label = "a" }
@@ -550,8 +560,8 @@ describe("Grid", function ()
 				})
 			end)
 			it("1 by 1", function ()
-				assert.are.same(gui.VBox{
-					gui.Label{ label = "a" }
+				assert.are.same(gui.Label{
+					label = "a"
 				}, flow_extras.Grid{
 					w = 1, h = 1,
 					gui.Label{ label = "a" },

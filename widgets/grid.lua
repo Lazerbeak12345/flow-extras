@@ -27,7 +27,7 @@ function flow_extras.Grid(fields)
 		end
 		col[hi] = row
 	end
-	if h == 1 and w ~= 1 then
+	if h == 1 then
 		return col[1]
 	end
 	return vbox(col)
