@@ -20,15 +20,7 @@ function flow_extras.Grid(fields)
 			assert(item, "item must not be nil")
 			row[wi] = item
 		end
-		if w == 1 then
-			row = row[1]
-		else
-			row = hbox(row)
-		end
-		col[hi] = row
+		col[hi] = w == 1 and row[1] or hbox(row)
 	end
-	if h == 1 then
-		return col[1]
-	end
-	return vbox(col)
+	return h == 1 and col[1] or vbox(col)
 end
