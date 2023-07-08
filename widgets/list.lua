@@ -26,7 +26,7 @@ local function ThemableList(fields)
 				sub_fields.spacing = spacing
 				return gui.HBox(sub_fields)
 			end,
-			children_by_index = function (_) -- TODO use mod to convert index into bgimg_idx
+			children_by_index = function (_)
 				if bgimg_idx > #bgimg then
 					bgimg_idx = 1
 				end
