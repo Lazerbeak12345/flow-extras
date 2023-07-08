@@ -80,7 +80,6 @@ function flow_extras.List(fields)
 		main_list
 	}
 	if has_remainder then
-		-- TODO: use a single grid element
 		local remainder_list = ThemableList{
 			inventory_location = inventory_location,
 			list_name = list_name,
