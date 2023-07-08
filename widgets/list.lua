@@ -3,16 +3,16 @@ local gui = flow.widgets
 local function ThemableList(fields)
 	local spacing = fields.spacing or 0.25
 	fields.spacing = nil
-	if type(fields.bgimg) == "boolean" and not fields.bgimg then
-		fields.bgimg = nil
+	local bgimg = fields.bgimg
+	fields.bgimg = nil
+	if type(bgimg) == "boolean" and not bgimg then
 		return gui.List(fields)
-	end
-	local bgimg = fields.bgimg or { "flow_extras_list_bg.png" }
-	if type(bgimg) ~= "table" then
+	elseif not bgimg then
+		bgimg = { "flow_extras_list_bg.png" }
+	elseif type(bgimg) ~= "table" then
 		bgimg = { bgimg }
 	end
 	local bgimg_idx = 1 + (fields.starting_item_index or 0)
-	fields.bgimg = nil
 	return gui.Stack{
 		align_h = "center",
 		align_v = "center",
