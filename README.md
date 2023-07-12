@@ -55,7 +55,6 @@ I've seen a lot of libraries like Qt and GTK accumulate hundreds of widgets over
     - [ ] behave like breakpoints from the CSS library Bootstrap
 - [ ] Each type of for loop as a map-like function
 - [ ] `{Widget,table}[][] -> WidgetArgs[]`
-- [ ] Integrate with `flow_inspector`
 
 ## Legal
 

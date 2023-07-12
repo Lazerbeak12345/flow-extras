@@ -3,41 +3,47 @@ local gui = flow.widgets
 local function ThemableList(fields)
 	local spacing = fields.spacing or 0.25
 	fields.spacing = nil
-	local bgimg = fields.bgimg
-	fields.bgimg = nil
-	if type(bgimg) == "boolean" and not bgimg then
+	if type(fields.bgimg) == "boolean" and not fields.bgimg then
+		fields.bgimg = nil
 		return gui.List(fields)
-	elseif not bgimg then
-		bgimg = { "flow_extras_list_bg.png" }
-	elseif type(bgimg) ~= "table" then
+	end
+	local col = gui.VBox{ spacing = spacing }
+	local bgimg = fields.bgimg or { "flow_extras_list_bg.png" } -- TODO change filename
+	if type(bgimg) ~= "table" then
 		bgimg = { bgimg }
 	end
 	local bgimg_idx = 1 + (fields.starting_item_index or 0)
+	local w = fields.w
+	local h = fields.h
+	for _=1, h do
+		local row = gui.HBox{ spacing = spacing }
+		for _=1, w do
+			if bgimg_idx > #bgimg then
+				bgimg_idx = 1
+			end
+			local the_image = bgimg[bgimg_idx]
+			assert(type(the_image) ~= "nil", "must not be a nil image " .. bgimg_idx)
+			local item = (type(the_image) == "boolean" and not the_image) and
+				gui.Spacer{ w = 1, h = 1, expand = false } or
+				gui.Image{ w = 1, h = 1, bgimg = the_image }
+			bgimg_idx = bgimg_idx + 1
+			if w == 1 then
+				row = item
+			else
+				row[#row+1] = item
+			end
+		end
+		if h == 1 then
+			col = row
+		else
+			col[#col+1] = row
+		end
+	end
+	fields.bgimg = nil
 	return gui.Stack{
 		align_h = "center",
 		align_v = "center",
-		flow_extras.Grid{
-			w = fields.w, h = fields.h,
-			VBox = function (sub_fields)
-				sub_fields.spacing = spacing
-				return gui.VBox(sub_fields)
-			end,
-			HBox = function (sub_fields)
-				sub_fields.spacing = spacing
-				return gui.HBox(sub_fields)
-			end,
-			children_by_index = function (_)
-				if bgimg_idx > #bgimg then
-					bgimg_idx = 1
-				end
-				local the_image = bgimg[bgimg_idx]
-				assert(type(the_image) ~= "nil", "must not be a nil image " .. bgimg_idx)
-				bgimg_idx = bgimg_idx + 1
-				return (type(the_image) == "boolean" and not the_image) and
-					gui.Spacer{ w = 1, h = 1, expand = false } or
-					gui.Image{ w = 1, h = 1, bgimg = the_image }
-			end
-		},
+		col,
 		gui.List(fields)
 	}
 end
