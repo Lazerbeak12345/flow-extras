@@ -28,7 +28,7 @@ I've seen a lot of libraries like Qt and GTK accumulate hundreds of widgets over
 > "OPTIONAL" in this document are to be interpreted as described in
 > [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119).
 
-1. Widgets MUST NOT require any specific game or mod, except for `flow`.
+1. Widgets MUST NOT require any specific game or mod, except for `flow` or `formspec_ast`.
 2. Widgets SHOULD NOT be a part of Flow. If a widget is added to Flow after it has been included in Flow-Extras, this widget SHOULD be deprecated.
 3. Widgets MUST fulfill an existing need, shown by at least two projects.
 4. Widgets MUST be themable wherever reasonably possible using conventional methods.

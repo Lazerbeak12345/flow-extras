@@ -12,10 +12,13 @@ minetest.is_singleplayer = ident(true)
 minetest.get_translator = ident(ident)
 function minetest.get_modpath(modname)
 	if modname == "flow" then return "../flow" end
+	if modname == "formspec_ast" then return "../formspec_ast" end
 	assert(modname == "flow_extras", "modname must be flow_extras. was " .. modname)
 	return "."
 end
-_G.minetest = minetest
+_G.FORMSPEC_AST_PATH = '../formspec_ast'
+dofile(FORMSPEC_AST_PATH .. '/init.lua')
+_G.minetest = minetest -- Must be defined after formspec_ast runs
 dofile"../flow/init.lua"
 dofile"init.lua"
 local flow_extras, describe, it, assert, flow, pending = flow_extras, describe, it, assert, flow, pending
@@ -583,6 +586,176 @@ describe("Grid", function ()
 				gui.Label{ label = "c" },
 				gui.Label{ label = "d" }
 			})
+		end)
+	end)
+end)
+describe("tools", function ()
+	describe("flow_container_elms set", function ()
+		it("is a table on flow_extras", function ()
+			assert.equal("table", type(flow_extras.flow_container_elms))
+		end)
+		it("contains only true values and string keys", function ()
+			for key, value in pairs(flow_extras.flow_container_elms) do
+				assert.equal("string", type(key), "key must be a string")
+				assert.equal(true, value, "all values must be exactly true")
+			end
+		end)
+		-- I'm unsure how to test this. If I hardcode it, then the test is pointless, but directly referencing isn't possible.
+		-- TODO: Perhaps contrasting the behavior of .walk with the two sets would work? This would still require hardcoding
+		-- for the demo - even if I had property testing.
+		--pending"is a superset of the formspec_ast container list"
+	end)
+	describe("walk", function ()
+		it("is a function on flow_extras", function ()
+			assert.equal("function", type(flow_extras.walk))
+		end)
+		it("iterates over every flow container", function ()
+			-- use flow_container_elms to make a tree to iterate over
+			local collection = {}
+			local the_tree = gui.HBox{ }
+			local function make_fake_tree(tree_type)
+				collection[tree_type] = {
+					type = tree_type,
+					gui.Label{ label = "hi!" }
+				}
+				the_tree[#the_tree+1] = collection[tree_type]
+			end
+			-- This one's fake
+			make_fake_tree"fake"
+			for name, _ in pairs(flow_extras.flow_container_elms) do
+				make_fake_tree(name)
+			end
+			-- Run the iteration, marking as we go
+			for elm in flow_extras.walk(the_tree) do
+				elm.marked = true
+			end
+			-- Assert that the marks are present.
+			local modified_collection = {}
+			local function make_fake_tree_after(tree_type, is_marked)
+				modified_collection[tree_type] = {
+					type = tree_type,
+					gui.Label{ label = "hi!", marked = is_marked },
+					marked = true
+				}
+			end
+			make_fake_tree_after"fake" -- Fakes aren't marked
+			-- make_fake_tree_after("container", true)
+			make_fake_tree_after("hbox", true)
+			make_fake_tree_after("vbox", true)
+			-- make_fake_tree_after("scroll_container", true)
+			assert.same(collection, modified_collection)
+			assert.Nil(the_tree.marked, "Just like in formspec_ast.walk, the tree itself is not iterated.")
+		end)
+	end)
+	describe("search", function ()
+		it("is a function on flow_extras", function ()
+			assert.equal("function", type(flow_extras.search))
+		end)
+		it("walks over everything matching the given name", function ()
+			local tree = {
+				gui.Box{ color = "green" },
+				gui.Label{ label = "the text" }
+			}
+			for node in flow_extras.search{
+				tree = tree,
+				values = { label = true }
+			} do
+				node.visited = true
+			end
+			assert.same({
+				gui.Box{ color = "green" },
+				gui.Label{ label = "the text", visited = true }
+			}, tree)
+		end)
+		it("errors out if both values and value are not provided", function ()
+			assert.has_error(function ()
+				flow_extras.search{
+					tree = { gui.Label{ label = "label " } },
+				}
+			end, "either values or value arg must be provided")
+		end)
+		it("walks over everything matching the given names", function ()
+			local tree = {
+				gui.Nil{},
+				gui.Box{ color = "green" },
+				gui.Label{ label = "the text" }
+			}
+			for node in flow_extras.search{
+				tree = tree,
+				values = { label = true, box = true }
+			} do
+				node.visited = true
+			end
+			assert.same({
+				gui.Nil{},
+				gui.Box{ color = "green", visited = true },
+				gui.Label{ label = "the text", visited = true }
+			}, tree)
+		end)
+		it("can search via differnt property instead of type", function ()
+			local tree = {
+				gui.Nil{},
+				gui.Box{ color = "green" },
+				gui.Label{ label = "the text" }
+			}
+			for node in flow_extras.search{
+				tree = tree,
+				key = "color",
+				value = "green"
+			} do
+				node.visited = true
+			end
+			assert.same({
+				gui.Nil{},
+				gui.Box{ color = "green", visited = true },
+				gui.Label{ label = "the text" }
+			}, tree)
+		end)
+		it("can walk over the first instance of everything", function ()
+			local tree = {
+				gui.Asdf{},
+				gui.Box{ color = "green" },
+				gui.Label{ label = "the text" },
+				gui.Label{ label = "the text" },
+				gui.Label{ label = "the text" }
+			}
+			for node in flow_extras.search{
+				tree = tree,
+				values = { label = true, asdf = true },
+				first_of_each = true
+			} do
+				node.visited = true
+			end
+			assert.same({
+				gui.Asdf{ visited = true },
+				gui.Box{ color = "green" },
+				gui.Label{ label = "the text", visited = true },
+				gui.Label{ label = "the text" },
+				gui.Label{ label = "the text" }
+			}, tree)
+		end)
+		it("can be broken out of", function ()
+			local tree = {
+				gui.Box{ color = "green" },
+				gui.Label{ label = "the text" },
+				gui.Label{ label = "the text" },
+				gui.Label{ label = "the text" }
+			}
+			local count = 1
+			for node in flow_extras.search{
+				tree = tree,
+				values = { label = true, box = true }
+			} do
+				node.visited = true
+				if count == 2 then break end
+				count = count + 1
+			end
+			assert.same({
+				gui.Box{ color = "green", visited = true },
+				gui.Label{ label = "the text", visited = true },
+				gui.Label{ label = "the text" },
+				gui.Label{ label = "the text" }
+			}, tree)
 		end)
 	end)
 end)
