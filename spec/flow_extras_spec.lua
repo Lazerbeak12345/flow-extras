@@ -10,13 +10,14 @@ local minetest = {
 }
 minetest.is_singleplayer = ident(true)
 minetest.get_translator = ident(ident)
+local FORMSPEC_AST_PATH = '../formspec_ast'
+_G.FORMSPEC_AST_PATH = FORMSPEC_AST_PATH
 function minetest.get_modpath(modname)
 	if modname == "flow" then return "../flow" end
-	if modname == "formspec_ast" then return "../formspec_ast" end
+	if modname == "formspec_ast" then return FORMSPEC_AST_PATH end
 	assert(modname == "flow_extras", "modname must be flow_extras. was " .. modname)
 	return "."
 end
-_G.FORMSPEC_AST_PATH = '../formspec_ast'
 dofile(FORMSPEC_AST_PATH .. '/init.lua')
 _G.minetest = minetest -- Must be defined after formspec_ast runs
 dofile"../flow/init.lua"
