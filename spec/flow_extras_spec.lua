@@ -668,6 +668,13 @@ describe("tools", function ()
 				gui.Label{ label = "the text", visited = true }
 			}, tree)
 		end)
+		it("errors out if tree is not provided", function ()
+			assert.has_error(function ()
+				flow_extras.search{
+					value = "hi"
+				}
+			end, "tree must be provided")
+		end)
 		it("errors out if both values and value are not provided", function ()
 			assert.has_error(function ()
 				flow_extras.search{

@@ -11,7 +11,7 @@ function flow_extras.walk(tree)
 	return formspec_ast.walk(tree, flow_extras.flow_container_elms)
 end
 function flow_extras.search(args)
-	local tree = args.tree
+	local tree = assert(args.tree, "tree must be provided")
 	local key = args.key or "type"
 	local value = args.value
 	local values = args.values
