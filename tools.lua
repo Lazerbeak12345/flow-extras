@@ -16,6 +16,10 @@ function flow_extras.search(args)
 	local value = args.value
 	local values = args.values
 	local first_of_each = args.first_of_each
+	local check_root = args.check_root
+	if check_root then
+		tree = { tree } -- walk _never_ checks the root - so wrap it in a new root.
+	end
 	if not values then
 		values = {}
 		assert(value ~= nil, "either values or value arg must be provided")

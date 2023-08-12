@@ -683,18 +683,18 @@ describe("tools", function ()
 			end, "either values or value arg must be provided")
 		end)
 		it("walks over everything matching the given names", function ()
-			local tree = {
+			local tree = gui.HBox{
 				gui.Nil{},
 				gui.Box{ color = "green" },
 				gui.Label{ label = "the text" }
 			}
 			for node in flow_extras.search{
 				tree = tree,
-				values = { label = true, box = true }
+				values = { hbox = true, label = true, box = true }
 			} do
 				node.visited = true
 			end
-			assert.same({
+			assert.same(gui.HBox{
 				gui.Nil{},
 				gui.Box{ color = "green", visited = true },
 				gui.Label{ label = "the text", visited = true }
@@ -763,6 +763,26 @@ describe("tools", function ()
 				gui.Label{ label = "the text", visited = true },
 				gui.Label{ label = "the text" },
 				gui.Label{ label = "the text" }
+			}, tree)
+		end)
+		it("can include the root in the check", function ()
+			local tree = gui.HBox{
+				gui.Nil{},
+				gui.Box{ color = "green" },
+				gui.Label{ label = "the text" }
+			}
+			for node in flow_extras.search{
+				tree = tree,
+				check_root = true,
+				values = { hbox = true, label = true, box = true }
+			} do
+				node.visited = true
+			end
+			assert.same(gui.HBox{
+				visited = true,
+				gui.Nil{},
+				gui.Box{ color = "green", visited = true },
+				gui.Label{ label = "the text", visited = true }
 			}, tree)
 		end)
 	end)
