@@ -32,10 +32,5 @@ jobs:
         run: |
           cd flow-extras
           ./run-tests.sh
-          ls -l
-          luacov-coveralls
-      - name: send coverage to coveralls
-        #  run: luacov-coveralls
-        run: |
-          ls -l
-          luacov-coveralls
+          luacov-coveralls "^init.lua" "^widgets/" "^tools.lua"
+          # Be sure to apply changes to luacov to the local env as well
