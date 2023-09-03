@@ -1,6 +1,9 @@
 # Flow Extras
 
 [![ContentDB](https://content.minetest.net/packages/lazerbeak12345/flow_extras/shields/downloads/)](https://content.minetest.net/packages/lazerbeak12345/flow_extras/)
+[![Coverage Status](https://coveralls.io/repos/github/Lazerbeak12345/flow-extras/badge.svg?branch=master)](https://coveralls.io/github/Lazerbeak12345/flow-extras?branch=master)
+[![busted](https://github.com/Lazerbeak12345/flow-extras/actions/workflows/busted.yml/badge.svg)](https://github.com/Lazerbeak12345/flow-extras/actions/workflows/busted.yml)
+[![luacheck](https://github.com/Lazerbeak12345/flow-extras/actions/workflows/luacheck.yml/badge.svg)](https://github.com/Lazerbeak12345/flow-extras/actions/workflows/luacheck.yml)
 
 An experimental collection of extra widgets for [flow].
 
