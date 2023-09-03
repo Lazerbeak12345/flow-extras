@@ -22,7 +22,7 @@ dofile(FORMSPEC_AST_PATH .. '/init.lua')
 _G.minetest = minetest -- Must be defined after formspec_ast runs
 dofile"../flow/init.lua"
 dofile"init.lua"
-local flow_extras, describe, it, assert, flow, pending = flow_extras, describe, it, assert, flow, pending
+local flow_extras, describe, it, assert, flow = flow_extras, describe, it, assert, flow
 local gui = flow.widgets
 local function debug(...)
 	for _, item in ipairs{ ... } do
@@ -34,6 +34,7 @@ local function debug(...)
 	end
 	return ...
 end
+assert(debug) -- Hack to make it so I don't have to ignore that this function is usually unused.
 describe("*basics*", function ()
 	it("doesn't error out when loading init.lua", function ()
 		assert(true, "by the time it got here it would have failed if it didn't work")

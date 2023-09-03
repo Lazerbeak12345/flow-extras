@@ -1,6 +1,6 @@
 local flow, minetest, flow_extras = flow, minetest, flow_extras
 local gui = flow.widgets
-local example_form = flow.make_gui(function (player, ctx)
+local example_form = flow.make_gui(function ()
 	return gui.HBox{
 		gui.VBox{
 			gui.Label{ label = "List demo" },
