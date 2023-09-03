@@ -24,6 +24,8 @@ jobs:
         run: luarocks install busted
       - name: install luacov
         run: luarocks install luacov
+      - name: install luacov-multiple
+        run: luarocks install luacov-multiple
       - name: test
         run: |
           cd flow-extras
