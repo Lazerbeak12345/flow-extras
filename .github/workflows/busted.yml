@@ -37,7 +37,7 @@ jobs:
         run: |
           pushd flow-extras
           luacov-coveralls -r $PWD -i "^init" -i "^tools" -i "^widgets"
-          # Keep above in sync with ./run-tests?
+          # Keep above in sync with ./run-tests
           popd
         env:
           COVERALLS_REPO_TOKEN: ${{ github.token }}
