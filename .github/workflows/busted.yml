@@ -20,17 +20,22 @@ jobs:
 
       - uses: leafo/gh-actions-lua@v9
       - uses: leafo/gh-actions-luarocks@v4
-      - name: install busted
-        run: luarocks install busted
-      - name: install luacov
-        run: luarocks install luacov
-      - name: install luacov-multiple
-        run: luarocks install luacov-multiple
-      - name: install coveralls tool
-        run: luarocks install luacov-coveralls
-      - name: test
+      - name: setup deps
         run: |
-          cd flow-extras
-          ./run-tests.sh
-          luacov-coveralls "^init.lua" "^widgets/" "^tools.lua"
-          # Be sure to apply changes to luacov to the local env as well
+          luarocks install busted
+          luarocks install luacov
+          luarocks install luacov-multiple
+          luarocks install luacov-coveralls
+      - name: run tests
+        run: |
+          pushd flow-extras
+          busted -c -v
+          popd
+      - name: run tests
+        run: |
+          pushd flow-extras
+          luacov-coveralls -i "^[^/.s]"
+          # Keep above in sync with ./run-tests
+          popd
+        env:
+          COVERALLS_REPO_TOKEN: ${{ github.token }}
