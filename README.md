@@ -4,6 +4,8 @@
 [![Coverage Status](https://coveralls.io/repos/github/Lazerbeak12345/flow-extras/badge.svg?branch=master)](https://coveralls.io/github/Lazerbeak12345/flow-extras?branch=master)
 [![busted](https://github.com/Lazerbeak12345/flow-extras/actions/workflows/busted.yml/badge.svg)](https://github.com/Lazerbeak12345/flow-extras/actions/workflows/busted.yml)
 [![luacheck](https://github.com/Lazerbeak12345/flow-extras/actions/workflows/luacheck.yml/badge.svg)](https://github.com/Lazerbeak12345/flow-extras/actions/workflows/luacheck.yml)
+[![versioned: semantically](https://img.shields.io/badge/versioned-semantically-orange)](https://semver.org)
+![image badge containing latest version number](https://img.shields.io/github/v/tag/Lazerbeak12345/flow-extras?filter=*.*.*&label=latest%20version)
 
 An experimental collection of extra widgets for [flow].
 
