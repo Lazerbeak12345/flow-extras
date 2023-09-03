@@ -26,11 +26,12 @@ jobs:
         run: luarocks install luacov
       - name: install luacov-multiple
         run: luarocks install luacov-multiple
+      - name: install coveralls tool
+        run: luarocks install luacov-coveralls
       - name: test
         run: |
           cd flow-extras
           ./run-tests.sh
-      - name: install coveralls tool
-        run: luarocks install luacov-coveralls
+          ls -al
       - name: send coverage to coveralls
         run: luacov-coveralls
