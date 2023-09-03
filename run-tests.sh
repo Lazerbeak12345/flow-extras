@@ -1,2 +1,2 @@
 #!/bin/sh
-rm luacov*.out; busted --coverage && luacov "^init.lua" "^widgets/" "^tools.lua"
+rm -f luacov*.out; busted --coverage && luacov "^init.lua" "^widgets/" "^tools.lua"

@@ -1,0 +1,34 @@
+on: [push, pull_request]
+name: busted
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: luk3yx/minetest-formspec_ast
+          path: formspec_ast
+
+      - uses: actions/checkout@v3
+        with:
+          repository: luk3yx/minetest-flow
+          path: flow
+
+      - uses: actions/checkout@v3
+        with:
+          path: flow-extras
+
+      - uses: leafo/gh-actions-lua@v9
+      - uses: leafo/gh-actions-luarocks@v4
+      - name: install busted
+        run: luarocks install busted
+      - name: install luacov
+        run: luarocks install luacov
+      - name: test
+        run: |
+          cd flow-extras
+          ./run-tests.sh
+      - name: install coveralls tool
+        run: luarocks install luacov-coveralls
+      - name: send coverage to coveralls
+        run: luacov-coveralls
