@@ -36,7 +36,7 @@ jobs:
         continue-on-error: true
         run: |
           pushd flow-extras
-          luacov-coveralls -e "(\.luarocks|\.\.|spec)"
+          luacov-coveralls -r $PWD "^[^/.s]"
           # Keep above in sync with ./run-tests?
           popd
         env:
