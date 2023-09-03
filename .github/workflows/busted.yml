@@ -36,8 +36,8 @@ jobs:
         continue-on-error: true
         run: |
           pushd flow-extras
-          luacov-coveralls -i flow-extras -e .luarocks
-          # Keep above in sync with ./run-tests
+          luacov-coveralls -e "\.luarocks"
+          # Keep above in sync with ./run-tests?
           popd
         env:
           COVERALLS_REPO_TOKEN: ${{ github.token }}
