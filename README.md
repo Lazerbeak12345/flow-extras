@@ -1,7 +1,7 @@
 # Flow Extras
 
 [![ContentDB](https://content.minetest.net/packages/lazerbeak12345/flow_extras/shields/downloads/)](https://content.minetest.net/packages/lazerbeak12345/flow_extras/)
-[![Minetest Forums](https://img.shields.io/badge/Minetest_Forums-Flow_Extras-%234faf00?logo=minetest)](https://forum.minetest.net/viewtopic.php?t=29766)
+[![Minetest Forums](https://img.shields.io/badge/Minetest_Forums-Flow_Extras-%234faf00?logo=minetest&labelColor=%23161616)](https://forum.minetest.net/viewtopic.php?t=29766)
 [![busted](https://github.com/Lazerbeak12345/flow-extras/actions/workflows/busted.yml/badge.svg)](https://github.com/Lazerbeak12345/flow-extras/actions/workflows/busted.yml)
 [![luacheck](https://github.com/Lazerbeak12345/flow-extras/actions/workflows/luacheck.yml/badge.svg)](https://github.com/Lazerbeak12345/flow-extras/actions/workflows/luacheck.yml)
 [![Coverage Status](https://coveralls.io/repos/github/Lazerbeak12345/flow-extras/badge.svg?branch=master)](https://coveralls.io/github/Lazerbeak12345/flow-extras?branch=master)
