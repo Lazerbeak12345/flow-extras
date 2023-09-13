@@ -787,4 +787,196 @@ describe("tools", function ()
 			}, tree)
 		end)
 	end)
+	describe("get and set wrapped context", function ()
+		it("is a pair of functions on flow_extras", function ()
+			assert.equal("function", type(flow_extras.set_wrapped_context))
+			assert.equal("function", type(flow_extras.get_context))
+		end)
+		local function _requires_flow_get_context(context, callback)
+			-- flow.get_context is experimental. we can't rely on it since it's undocumented.
+			assert.is.same(
+				"function",
+				type(flow.get_context),
+				"flow-extras is outdated. get_context was removed TODO: see what it was replaced with"
+			)
+			local old_flow_get_context = flow.get_context
+			flow.get_context = nil
+			assert(not flow.get_context, "flow-extras is outdated, get_context works differently now")
+			flow.get_context = function ()
+				return context
+			end
+			callback()
+			flow.get_context = old_flow_get_context
+		end
+		local function _requires_flow_get_context_is_gone(callback)
+			local old_flow_get_context = flow.get_context
+			if old_flow_get_context then
+				flow.get_context = nil
+				assert(not flow.get_context, "flow-extras is outdated, get_context works differently now")
+			end
+			callback()
+			flow.get_context = old_flow_get_context
+		end
+		describe("set_wrapped_context", function ()
+			it("returns what flow provides and ignores a set (yes flow, yes wrap, but they differ)", function ()
+				local f_ctx = {}
+				local w_ctx = {}
+				spy.on(minetest, "log")
+				_requires_flow_get_context(f_ctx, function ()
+					local before_ctx = flow_extras.get_context()
+					assert.same(f_ctx, before_ctx)
+					assert.equal(f_ctx, before_ctx)
+					flow_extras.set_wrapped_context(w_ctx, function ()
+						local actual_ctx = flow_extras.get_context()
+						assert.same(f_ctx, actual_ctx)
+						assert.equal(f_ctx, actual_ctx)
+						assert.same(w_ctx, actual_ctx)
+						assert.are_not.equal(w_ctx, actual_ctx)
+					end)
+					local after_ctx = flow_extras.get_context()
+					assert.same(f_ctx, after_ctx)
+					assert.equal(f_ctx, after_ctx)
+				end)
+				assert.spy(minetest.log).was_called_with(
+					"warning",
+					"[flow_extras] you can't use set_wrapped_context to replace or override the context"
+				)
+			end)
+			it("logs a warning if called within itself", function ()
+				spy.on(minetest, "log")
+				flow_extras.set_wrapped_context({}, function ()
+					return flow_extras.set_wrapped_context({}, function ()
+						return gui.Label{ label = "hi" }
+					end)
+				end)
+				assert.spy(minetest.log).was_called_with("warning", "[flow_extras] set_wrapped_context was called within itself (recursive).")
+			end)
+			it("returns the callback return", function ()
+				assert.same(flow_extras.set_wrapped_context({}, function ()
+					return gui.Label{ label = "hi" }
+				end), gui.Label{ label = "hi" })
+			end)
+			describe("arguments", function ()
+				it("both are required", function ()
+					assert.has.errors(function ()
+						flow_extras.set_wrapped_context()
+					end, "[flow_extras] set_wrapped_context requires two arguments", "neither")
+					assert.has.errors(function ()
+						flow_extras.set_wrapped_context({})
+					end, "[flow_extras] set_wrapped_context requires two arguments", "jst one")
+				end)
+				it("first must be table", function ()
+					assert.has.errors(function ()
+						flow_extras.set_wrapped_context(function () end, function () end)
+					end, "[flow_extras] set_wrapped_context the first argument must be a table")
+				end)
+				it("second must be function", function ()
+					assert.has.errors(function ()
+						flow_extras.set_wrapped_context({}, true)
+					end, "[flow_extras] set_wrapped_context the second argument must be a function")
+				end)
+			end)
+		end)
+		describe("get_context", function ()
+			--[[
+			-- [ ] [ ] Has Flow get context
+			-- [ ] [ ] Does not have flow get context
+			--  \   \___ Wrapped
+			--   \______ Not wrapped
+			--]]
+			--_#
+			--__
+			it("yes flow yes wrap (and they are the same)", function ()
+				local a = {}
+				_requires_flow_get_context(a, function ()
+					flow_extras.set_wrapped_context(a, function ()
+						assert.equal(a, flow_extras.get_context())
+					end)
+				end)
+			end)
+			-- __
+			-- _#
+			it("yes wrap no flow works", function ()
+				local a = {}
+				_requires_flow_get_context_is_gone(function ()
+					flow_extras.set_wrapped_context(a, function ()
+						assert.equal(a, flow_extras.get_context())
+					end)
+				end)
+			end)
+			-- #_
+			-- __
+			it("yes flow no wrap works", function ()
+				local a = {}
+				_requires_flow_get_context(a, function ()
+					assert.equal(a, flow_extras.get_context())
+				end)
+			end)
+			-- __
+			-- #_
+			it("no flow no wrap returns nil", function ()
+				assert.same(nil, flow_extras.get_context())
+			end)
+		end)
+	end)
 end)
+pending"fake"
+--[[
+describe("fake", function ()
+	it("is a table on flow_extras", function ()
+		assert.are.equal("table", type(flow_extras.fake))
+	end)
+	describe("Tabheader", function ()
+		-- A fake tabheader[] element using buttons.
+		-- It's more important that it works than if it looks good so transparency
+		-- and borders might not be considered or supported.
+		it("is a function inside the fake table on flow_extras", function ()
+			assert.are.equal("function", type(flow_extras.fake.Tabheader))
+		end)
+		it("has a pointer to it on flow_extras that could also point to the real api for forward compatibility", function ()
+			assert(flow_extras.Tabheader == flow_extras.fake.Tabheader or flow_extras.Tabheader == flow.widgets.Tabheader)
+		end)
+		-- * `H`: height of the tabheader. Width is automatically determined with this syntax.
+		it("h", function ()
+			assert.same(flow_extras.fake.Tabheader{
+				h = 2,
+				captions = { "a", "b", "c" },
+				current_tab = 2,
+				name = "testname"
+			}, gui.HBox{
+				name = "testname",
+				gui.Button{ label = "a", name = "testname_1", h = 2 - 0.3 },
+				gui.Button{ label = "b", name = "testname_2", h = 2 },
+				gui.Button{ label = "c", name = "testname_3", h = 2 - 0.3 }
+			})
+		end)
+		-- * `W` and `H`: width and height of the tabheader
+		it("w + h", function ()
+			assert.same(flow_extras.fake.Tabheader{
+				h = 2,
+				w = 1, -- make it so small that it will only show the first.
+				captions = { "HJOFSIDF", "*", "oo", "0" },
+				current_tab = 3,
+				name = "nameeee"
+			}, gui.HBox{
+				-- The buttons that can't be rendered must be sliced into their
+				-- own "page" of the tabheader, navvable via a pair of left and
+				-- right buttons, right aligned in the HBox. To do this would
+				-- require getting context, and behaving much like the
+				-- flow.ScrollContainer thing
+				name = "nameeee",
+				max_w = 1,
+				gui.Button{ label = "HJOFSIDF", name = "nameeee_1", h = 1 - 0.3 },
+				--gui.Button{ label = "*",        name = "nameeee_2", h = 1 - 0.3 },
+				--gui.Button{ label = "oo",       name = "nameeee_3", h = 1 },
+				--gui.Button{ label = "0",        name = "nameeee_4", h = 1 - 0.3 }
+				gui.Button{ label = "<", name = "nameeee_left", h = 1, align_h = "end" },
+				gui.Button{ label = ">", name = "nameeee_right", h = 1, align_h = "end" }
+			})
+		end)
+		pending"has ctx info that is updated on button click"
+		pending"transparent" -- * `transparent` (optional): show transparent
+		pending"draw_border" -- * `draw_border` (optional): draw border
+		pending"left and right arrows for overflow (even though I could do better)"
+	end)
+end)]]
