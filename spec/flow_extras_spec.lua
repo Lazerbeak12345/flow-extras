@@ -849,7 +849,9 @@ describe("tools", function ()
 						return gui.Label{ label = "hi" }
 					end)
 				end)
-				assert.spy(minetest.log).was_called_with("warning", "[flow_extras] set_wrapped_context was called within itself (recursive).")
+				assert
+					.spy(minetest.log)
+					.was_called_with("warning", "[flow_extras] set_wrapped_context was called within itself (recursive).")
 			end)
 			it("returns the callback return", function ()
 				assert.same(flow_extras.set_wrapped_context({}, function ()
