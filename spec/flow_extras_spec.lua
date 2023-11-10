@@ -787,6 +787,67 @@ describe("tools", function ()
 			}, tree)
 		end)
 	end)
+	describe("contains", function ()
+		it("is a function on flow_extras", function ()
+			assert.equal("function", type(flow_extras.contains))
+		end)
+		it("errors if tree is not provided", function ()
+			assert.has_error(function ()
+				flow_extras.contains{
+					value = "hi"
+				}
+			end)
+		end)
+		it("errors out if both values and value are not provided", function ()
+			assert.has_error(function ()
+				flow_extras.contains{
+					tree = { gui.Label{ label = "label " } },
+				}
+			end, "either values or value arg must be provided")
+		end)
+		it("returns true if there was anything matching the given names", function ()
+			assert.True(flow_extras.contains{
+				tree = gui.HBox{
+					gui.Nil{},
+					gui.Box{ color = "green" },
+					gui.Label{ label = "the text" }
+				},
+				values = { hbox = true, label = true, box = true }
+			})
+		end)
+		it("returns false if there nothing matched the given names", function ()
+			assert.False(flow_extras.contains{
+				tree = gui.HBox{
+					gui.Nil{},
+					gui.Box{ color = "green" },
+					gui.Label{ label = "the text" }
+				},
+				values = { vbox = true, asdf = true, fdsa = true }
+			})
+		end)
+		it("can search via differnt property other than type", function ()
+			assert.True(flow_extras.contains{
+				tree = {
+					gui.Nil{},
+					gui.Box{ color = "green" },
+					gui.Label{ label = "the text" }
+				},
+				key = "color",
+				value = "green"
+			})
+		end)
+		it("can include root in the check", function ()
+			assert.True(flow_extras.contains{
+				tree = gui.HBox{
+					gui.Nil{},
+					gui.Box{ color = "green" },
+					gui.Label{ label = "the text" }
+				},
+				check_root = true,
+				values = { hbox = true }
+			})
+		end)
+	end)
 	describe("get and set wrapped context", function ()
 		it("is a pair of functions on flow_extras", function ()
 			assert.equal("function", type(flow_extras.set_wrapped_context))

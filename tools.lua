@@ -38,6 +38,9 @@ function flow_extras.search(args)
 		end
 	end
 end
+function flow_extras.contains(args)
+	return flow_extras.search(args)() and true or false
+end
 local baby = nil
 function flow_extras.set_wrapped_context(context, callback)
 	assert(callback, "[flow_extras] set_wrapped_context requires two arguments")
