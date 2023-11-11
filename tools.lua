@@ -6,6 +6,7 @@ flow_extras.flow_container_elms = {
 	-- scroll_container = true,
 	hbox = true,
 	vbox = true,
+	stack = true,
 }
 function flow_extras.walk(tree)
 	return formspec_ast.walk(tree, flow_extras.flow_container_elms)
