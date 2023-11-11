@@ -643,6 +643,7 @@ describe("tools", function ()
 			make_fake_tree_after"fake" -- Fakes aren't marked
 			-- make_fake_tree_after("container", true)
 			make_fake_tree_after("hbox", true)
+			make_fake_tree_after("stack", true)
 			make_fake_tree_after("vbox", true)
 			-- make_fake_tree_after("scroll_container", true)
 			assert.same(collection, modified_collection)
