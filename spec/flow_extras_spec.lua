@@ -51,41 +51,75 @@ describe("List", function ()
 		assert.same(gui.Stack{
 			align_h = "center",
 			align_v = "center",
-			gui.Image{ bgimg = "flow_extras_list_bg.png", w = 1, h = 1 },
+			gui.Image{ texture_name = "flow_extras_list_bg.png", w = 1, h = 1 },
 			gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1 }
 		}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 1, h = 1 })
 		-- Should be noted that 0,0 is not a valid size, but this should not care.
 	end)
-	it("has a default theme background", function ()
-		assert.same(gui.Stack{
-			align_h = "center",
-			align_v = "center",
-			gui.Image{ w = 1, h = 1, bgimg = "flow_extras_list_bg.png" },
-			gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1 }
-		}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 1, h = 1 })
-	end)
-	it("accepts a theme background string", function ()
-		assert.same(gui.Stack{
-			align_h = "center",
-			align_v = "center",
-			gui.Image{ w = 1, h = 1, bgimg = "c" },
-			gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1 }
-		}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 1, h = 1, bgimg = "c" })
-	end)
-	it("accepts a listof theme backgrounds", function ()
-		assert.same(gui.Stack{
-			align_h = "center",
-			align_v = "center",
-			gui.HBox{
-				spacing = 0.25,
-				gui.Image{ w = 1, h = 1, bgimg = "c" },
-				gui.Image{ w = 1, h = 1, bgimg = "d" },
-				gui.Image{ w = 1, h = 1, bgimg = "e" },
-				gui.Image{ w = 1, h = 1, bgimg = "c" },
-				gui.Image{ w = 1, h = 1, bgimg = "d" }
-			},
-			gui.List{ inventory_location = "a", list_name = "b", w = 5, h = 1 }
-		}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 5, h = 1, bgimg = { "c", "d", "e" } })
+	describe("theme background", function ()
+		it("has a default", function ()
+			assert.same(gui.Stack{
+				align_h = "center",
+				align_v = "center",
+				gui.Image{ w = 1, h = 1, texture_name = "flow_extras_list_bg.png" },
+				gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1 }
+			}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 1, h = 1 })
+		end)
+		it("can be overriden with a string", function ()
+			assert.same(gui.Stack{
+				align_h = "center",
+				align_v = "center",
+				gui.Image{ w = 1, h = 1, texture_name = "c" },
+				gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1 }
+			}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 1, h = 1, bgimg = "c" })
+		end)
+		describe("list overriding", function ()
+			it("works with default starting_item_index", function ()
+				assert.same(gui.Stack{
+					align_h = "center",
+					align_v = "center",
+					gui.HBox{
+						spacing = 0.25,
+						gui.Image{ w = 1, h = 1, texture_name = "c" },
+						gui.Image{ w = 1, h = 1, texture_name = "d" },
+						gui.Image{ w = 1, h = 1, texture_name = "e" },
+						gui.Image{ w = 1, h = 1, texture_name = "c" },
+						gui.Image{ w = 1, h = 1, texture_name = "d" }
+					},
+					gui.List{ inventory_location = "a", list_name = "b", w = 5, h = 1 }
+				}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 5, h = 1, bgimg = { "c", "d", "e" } })
+			end)
+			it("works with specific starting_item_index", function ()
+				assert.same(gui.Stack{
+					align_h = "center",
+					align_v = "center",
+					gui.HBox{
+						spacing = 0.25,
+						gui.Image{ w = 1, h = 1, texture_name = "e" },
+						gui.Image{ w = 1, h = 1, texture_name = "c" },
+						gui.Image{ w = 1, h = 1, texture_name = "d" },
+						gui.Image{ w = 1, h = 1, texture_name = "e" },
+						gui.Image{ w = 1, h = 1, texture_name = "c" },
+					},
+					gui.List{ inventory_location = "a", list_name = "b", w = 5, h = 1, starting_item_index = 2 }
+				}, flow_extras.List{
+					inventory_location = "a",
+					list_name = "b",
+					w = 5,
+					h = 1,
+					bgimg = { "c", "d", "e" },
+					starting_item_index = 2
+				})
+			end)
+			it("asserts an error when list length is zero, according to # operator", function ()
+				assert.has_error(function ()
+					return  flow_extras.List{ inventory_location = "a", list_name = "b", w = 5, h = 1, bgimg = { } }
+				end, "must not be a nil image 1")
+				assert.has_error(function ()
+					return  flow_extras.List{ inventory_location = "a", list_name = "b", w = 5, h = 1, bgimg = { [2]="c" } }
+				end, "must not be a nil image 1")
+			end)
+		end)
 	end)
 	it("works with two demensions", function ()
 		assert.same(gui.Stack{
@@ -95,18 +129,18 @@ describe("List", function ()
 				spacing = 0.25,
 				gui.HBox{
 					spacing = 0.25,
-					gui.Image{ w = 1, h = 1, bgimg = "c" },
-					gui.Image{ w = 1, h = 1, bgimg = "c" },
+					gui.Image{ w = 1, h = 1, texture_name = "c" },
+					gui.Image{ w = 1, h = 1, texture_name = "c" },
 				},
 				gui.HBox{
 					spacing = 0.25,
-					gui.Image{ w = 1, h = 1, bgimg = "c" },
-					gui.Image{ w = 1, h = 1, bgimg = "c" },
+					gui.Image{ w = 1, h = 1, texture_name = "c" },
+					gui.Image{ w = 1, h = 1, texture_name = "c" },
 				},
 				gui.HBox{
 					spacing = 0.25,
-					gui.Image{ w = 1, h = 1, bgimg = "c" },
-					gui.Image{ w = 1, h = 1, bgimg = "c" },
+					gui.Image{ w = 1, h = 1, texture_name = "c" },
+					gui.Image{ w = 1, h = 1, texture_name = "c" },
 				}
 			},
 			gui.List{ inventory_location = "a", list_name = "b", w = 2, h = 3 }
@@ -122,15 +156,15 @@ describe("List", function ()
 						spacing = 0.25,
 						gui.HBox{
 							spacing = 0.25,
-							gui.Image{ w = 1, h = 1, bgimg = "c" },
-							gui.Image{ w = 1, h = 1, bgimg = "c" },
-							gui.Image{ w = 1, h = 1, bgimg = "c" }
+							gui.Image{ w = 1, h = 1, texture_name = "c" },
+							gui.Image{ w = 1, h = 1, texture_name = "c" },
+							gui.Image{ w = 1, h = 1, texture_name = "c" }
 						},
 						gui.HBox{
 							spacing = 0.25,
-							gui.Image{ w = 1, h = 1, bgimg = "c" },
-							gui.Image{ w = 1, h = 1, bgimg = "c" },
-							gui.Image{ w = 1, h = 1, bgimg = "c" }
+							gui.Image{ w = 1, h = 1, texture_name = "c" },
+							gui.Image{ w = 1, h = 1, texture_name = "c" },
+							gui.Image{ w = 1, h = 1, texture_name = "c" }
 						}
 					},
 					gui.List{ inventory_location = "a", list_name = "b", w = 3, h = 2 }
@@ -142,8 +176,8 @@ describe("List", function ()
 						align_v = "center",
 						gui.VBox{
 							spacing = 0.25,
-							gui.Image{ w = 1, h = 1, bgimg = "c" },
-							gui.Image{ w = 1, h = 1, bgimg = "c" }
+							gui.Image{ w = 1, h = 1, texture_name = "c" },
+							gui.Image{ w = 1, h = 1, texture_name = "c" }
 						},
 						gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 2, starting_item_index = 6 }
 					}
@@ -167,15 +201,15 @@ describe("List", function ()
 						spacing = 0.25,
 						gui.HBox{
 							spacing = 0.25,
-							gui.Image{ w = 1, h = 1, bgimg = "c" },
-							gui.Image{ w = 1, h = 1, bgimg = "c" },
-							gui.Image{ w = 1, h = 1, bgimg = "c" }
+							gui.Image{ w = 1, h = 1, texture_name = "c" },
+							gui.Image{ w = 1, h = 1, texture_name = "c" },
+							gui.Image{ w = 1, h = 1, texture_name = "c" }
 						},
 						gui.HBox{
 							spacing = 0.25,
-							gui.Image{ w = 1, h = 1, bgimg = "c" },
-							gui.Image{ w = 1, h = 1, bgimg = "c" },
-							gui.Image{ w = 1, h = 1, bgimg = "c" }
+							gui.Image{ w = 1, h = 1, texture_name = "c" },
+							gui.Image{ w = 1, h = 1, texture_name = "c" },
+							gui.Image{ w = 1, h = 1, texture_name = "c" }
 						}
 					},
 					gui.List{ inventory_location = "a", list_name = "b", w = 3, h = 2 }
@@ -187,8 +221,8 @@ describe("List", function ()
 						align_v = "center",
 						gui.HBox{
 							spacing = 0.25,
-							gui.Image{ w = 1, h = 1, bgimg = "c" },
-							gui.Image{ w = 1, h = 1, bgimg = "c" }
+							gui.Image{ w = 1, h = 1, texture_name = "c" },
+							gui.Image{ w = 1, h = 1, texture_name = "c" }
 						},
 						gui.List{ inventory_location = "a", list_name = "b", w = 2, h = 1, starting_item_index = 6 }
 					}
@@ -212,7 +246,7 @@ describe("List", function ()
 				gui.Stack{
 					align_h = "center",
 					align_v = "center",
-					gui.Image{ bgimg = "flow_extras_list_bg.png", w = 1, h = 1 },
+					gui.Image{ texture_name = "flow_extras_list_bg.png", w = 1, h = 1 },
 					gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1 }
 				},
 				gui.HBox{
@@ -220,7 +254,7 @@ describe("List", function ()
 					gui.Stack{
 						align_h = "center",
 						align_v = "center",
-						gui.Image{ h = 1, w = 1, bgimg = "flow_extras_list_bg.png" },
+						gui.Image{ h = 1, w = 1, texture_name = "flow_extras_list_bg.png" },
 						gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1, starting_item_index = 1 }
 					}
 				}
@@ -242,7 +276,7 @@ describe("List", function ()
 				gui.Stack{
 					align_h = "center",
 					align_v = "center",
-					gui.Image{ h = 1, w = 1, bgimg = "flow_extras_list_bg.png" },
+					gui.Image{ h = 1, w = 1, texture_name = "flow_extras_list_bg.png" },
 					gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1 }
 				},
 				gui.VBox{
@@ -250,7 +284,7 @@ describe("List", function ()
 					gui.Stack{
 						align_h = "center",
 						align_v = "center",
-						gui.Image{ h = 1, w = 1, bgimg = "flow_extras_list_bg.png" },
+						gui.Image{ h = 1, w = 1, texture_name = "flow_extras_list_bg.png" },
 						gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1, starting_item_index = 1 }
 					}
 				}
@@ -271,13 +305,13 @@ describe("List", function ()
 			gui.Stack{
 				align_h = "center",
 				align_v = "center",
-				gui.Image{ h = 1, w = 1, bgimg = "flow_extras_list_bg.png" },
+				gui.Image{ h = 1, w = 1, texture_name = "flow_extras_list_bg.png" },
 				gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1, starting_item_index = 100 }
 			},
 			gui.Stack{
 				align_v = "center",
 				align_h = "center",
-				gui.Image{ h = 1, w = 1, bgimg = "flow_extras_list_bg.png" },
+				gui.Image{ h = 1, w = 1, texture_name = "flow_extras_list_bg.png" },
 				gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1, starting_item_index = 101 }
 			}
 		}, flow_extras.List{
@@ -293,7 +327,7 @@ describe("List", function ()
 			gui.Stack{
 				align_h = "center",
 				align_v = "center",
-				gui.Image{ w = 1, h = 1, bgimg = "flow_extras_list_bg.png" },
+				gui.Image{ w = 1, h = 1, texture_name = "flow_extras_list_bg.png" },
 				gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1 }
 			},
 			gui.Listring{ inventory_location = "a", list_name = "b" },
@@ -320,7 +354,7 @@ describe("List", function ()
 				gui.VBox{
 					spacing = 0.25,
 					gui.Spacer{ w = 1, h = 1, expand = false },
-					gui.Image{ w = 1, h = 1, bgimg = "c" }
+					gui.Image{ w = 1, h = 1, texture_name = "c" }
 				},
 				gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 2 },
 			}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 1, h = 2, bgimg = { false, "c" } })
@@ -336,13 +370,13 @@ describe("List", function ()
 					spacing = 1,
 					gui.HBox{
 						spacing = 1,
-						gui.Image{ w = 1, h = 1, bgimg = "flow_extras_list_bg.png" },
-						gui.Image{ w = 1, h = 1, bgimg = "flow_extras_list_bg.png" }
+						gui.Image{ w = 1, h = 1, texture_name = "flow_extras_list_bg.png" },
+						gui.Image{ w = 1, h = 1, texture_name = "flow_extras_list_bg.png" }
 					},
 					gui.HBox{
 						spacing = 1,
-						gui.Image{ w = 1, h = 1, bgimg = "flow_extras_list_bg.png" },
-						gui.Image{ w = 1, h = 1, bgimg = "flow_extras_list_bg.png" }
+						gui.Image{ w = 1, h = 1, texture_name = "flow_extras_list_bg.png" },
+						gui.Image{ w = 1, h = 1, texture_name = "flow_extras_list_bg.png" }
 					}
 				},
 				gui.List{ inventory_location = "a", list_name = "b", w = 2, h = 2 }
@@ -352,8 +386,8 @@ describe("List", function ()
 				align_v = "center",
 				gui.VBox{
 					spacing = 1,
-					gui.Image{ w = 1, h = 1, bgimg = "flow_extras_list_bg.png" },
-					gui.Image{ w = 1, h = 1, bgimg = "flow_extras_list_bg.png" }
+					gui.Image{ w = 1, h = 1, texture_name = "flow_extras_list_bg.png" },
+					gui.Image{ w = 1, h = 1, texture_name = "flow_extras_list_bg.png" }
 				},
 				gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 2, starting_item_index = 4 }
 			}

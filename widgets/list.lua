@@ -35,7 +35,7 @@ local function ThemableList(fields)
 				bgimg_idx = bgimg_idx + 1
 				return (type(the_image) == "boolean" and not the_image) and
 					gui.Spacer{ w = 1, h = 1, expand = false } or
-					gui.Image{ w = 1, h = 1, bgimg = the_image }
+					gui.Image{ w = 1, h = 1, texture_name = the_image }
 			end
 		},
 		gui.List(fields)
