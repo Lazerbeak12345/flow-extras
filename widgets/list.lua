@@ -52,6 +52,8 @@ function flow_extras.List(fields)
 	local remainder_v = fields.remainder_v
 	local remainder_align = fields.remainder_align
 	local listring = fields.listring or {}
+	-- Only works when paired with gui.Listcolors{} is set to something (at least somewhat) transparent.
+	-- https://github.com/minetest/minetest/blob/master/doc/lua_api.md#listcolorsslot_bg_normalslot_bg_hover
 	local bgimg = fields.bgimg
 	local align_h = fields.align_h
 	local align_v = fields.align_v

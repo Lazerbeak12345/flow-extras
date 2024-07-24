@@ -18,7 +18,59 @@ An experimental collection of extra widgets for [flow].
 
 ### Widgets
 
-TODO
+#### Grid
+
+> TODO:
+
+#### List
+
+```lua
+flow_extras.List{
+	inventory_location = inventory_location,
+	list_name = list_name,
+	w = w,
+	h = h,
+	starting_item_index = starting_item_index,
+	remainder = remainder ,
+	remainder_v = remainder_v ,
+	remainder_align = remainder_align,
+	listring = listring,
+	bgimg = bgimg,
+	align_h = align_h,
+	align_v = align_v,
+	spacing = spacing
+}
+```
+
+> TODO: link these
+
+| Parameter | Type | Description |
+| :-------- | :--- | :---------- |
+| `inventory_location` | `string` | **Required**. [See minetest's documentation for `list[]`][list] for more information. |
+| `list_name` | `string` | **Required**. [See minetest's documentation for `list[]`][list] for more information. |
+| `w` | `number` | **Required**. Width of list in tiles. [See minetest's documentation for `list[]`][list] for more information. |
+| `h` | `number` | **Required**. Height of list in tiles. [See minetest's documentation for `list[]`][list] for more information. |
+| `starting_item_index` | `number` | **Optional**. (Default `0`) Zero-based offset index for this list. [See minetest's documentation for `list[]`][list] for more information. |
+| `remainder` | `number` | **Optional**. (Default `0`) If you'd like a row of list tiles that is less than one demention of the rest of the list, set this to a number > 0. |
+| `remainder_v` | `boolean` | **Optional**. (Default `false`) If `true`, the remainder will be below the rest of the [`list[]`][list]. Otherwise, it is to the right. |
+| `remainder_align` | `string` | **Optional**. Passed into `align_v` on a [`flow.widgets.VBox`][gui.VBox] if `remainder_v` or `align_h` on a [`flow.widgets.HBox`][gui.HBox] to align the remainder list. |
+| `listring` | `table` | **Optional**. A list of tables each passed to `flow.widgets.Listring`. Prepended with this `list[]`'s location and name, if provided. If not provided, [`listring[]`][listring]s are not generated. |
+| `bgimg` | `boolean` or `string` or `table` of `string`s | **Optional**. If present, applies each image in order, looping from left to right, top to bottom, on each list tile in the main list, followed by the remainder list, in the same pattern. By default, since `list[]` elements are opaque, you will not be able to see these images. Make use of [`flow.widgets.Listcolors`][listcolors] to adjust this as needed. If `bgimg` is `false`, then no `bgimg`s are rendered. If it is `nil`, it defaults to `{ "flow_extras_list_bg.png" }`. If it is a string, it is wrapped in a table. |
+| `align_h` | `string` | **Optional**. If there is a remainder or a listring, this is passed to the the [`flow.widgets.VBox`][gui.VBox] if `remainder_v` or [`flow.widgets.Hbox`][gui.HBox] that wraps the entire element. Otherwise, this element does not exist, and either a [`flow.widgets.Stack`][gui.Stack] or a [`flow.widgets.List`][List] is the root. |
+| `align_v` | `string` | **Optional**. If there is a remainder or a listring, this is passed to the the [`flow.widgets.VBox`][gui.VBox] if `remainder_v` or [`flow.widgets.Hbox`][gui.HBox] that wraps the entire element. Otherwise, this element does not exist, and either a [`flow.widgets.Stack`][gui.Stack] or a [`flow.widgets.List`][List] is the root. |
+| `spacing` | `number` | **Optional**. The amount of space between the list tiles. Defaults to `0.25` - the same amount as minetest out of the box. |
+
+[list]: https://github.com/minetest/minetest/blob/master/doc/lua_api.md#listinventory-locationlist-namexywhstarting-item-index
+[listring]: https://github.com/minetest/minetest/blob/master/doc/lua_api.md#listringinventory-locationlist-name
+[gui.List]: https://gitlab.com/luk3yx/minetest-flow/-/blob/main/elements.md?ref_type=heads#guilist
+[gui.HBox]: https://gitlab.com/luk3yx/minetest-flow#guihbox
+[gui.VBox]: https://gitlab.com/luk3yx/minetest-flow#guivbox
+[gui.Stack]: https://gitlab.com/luk3yx/minetest-flow#guistack
+[listcolors]: https://github.com/minetest/minetest/blob/master/doc/lua_api.md#listcolorsslot_bg_normalslot_bg_hover
+
+### Tools
+
+> TODO:
 
 ### Textures
 
