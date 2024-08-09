@@ -1017,6 +1017,171 @@ describe("tools", function ()
 			end)
 		end)
 	end)
+	describe("For", function ()
+		it("is a function on flow_extras", function ()
+			assert.equal("function", type(flow_extras.For))
+		end)
+		it("uses magical horrible values-related implicit lua features to unwrap things into a parent", function ()
+			local things = { "a", "b", "c", also = "this" }
+			local result = gui.VBox{
+				gui.Nil{},
+				table.unpack(
+					flow_extras.For(ipairs(things))(function (_index, value)
+						return gui.Button{ label = value }
+					end)
+				)
+			}
+			assert.same(gui.VBox{
+				gui.Nil{},
+				gui.Button{ label = "a" },
+				gui.Button{ label = "b" },
+				gui.Button{ label = "c" },
+			}, result)
+		end)
+		it("duplicate as above but pairs", function ()
+			local things = { "a", "b", "c", also = "this" }
+			local result = gui.VBox{
+				gui.Nil{},
+				table.unpack(
+					flow_extras.For(pairs(things))(function (_key, value)
+						return gui.Button{ label = value }
+					end)
+				)
+			}
+			assert.same(gui.VBox{
+				gui.Nil{},
+				gui.Button{ label = "a" },
+				gui.Button{ label = "b" },
+				gui.Button{ label = "c" },
+				gui.Button{ label = "this" }
+			}, result)
+		end)
+		it("duplicate as above but next", function ()
+			local things = { "a", "b", "c", also = "this" }
+			local result = gui.VBox{
+				gui.Nil{},
+				table.unpack(
+					flow_extras.For(next, things)(function (_key, value)
+						return gui.Button{ label = value }
+					end)
+				)
+			}
+			assert.same(gui.VBox{
+				gui.Nil{},
+				gui.Button{ label = "a" },
+				gui.Button{ label = "b" },
+				gui.Button{ label = "c" },
+				gui.Button{ label = "this" }
+			}, result)
+		end)
+	end)
+	describe("table_join", function ()
+		it("is a table containing various named algorithms", function ()
+			assert.equal("table", type(flow_extras.table_join))
+			for _, value in pairs(flow_extras.table_join) do
+				assert.equal("function", type(value))
+			end
+		end)
+		local a, b
+		before_each(function ()
+			a = {
+				unique = "to a",
+				shared = "in a",
+				"indexed in a"
+			}
+			b = {
+				unique_to = "b",
+				shared = "in b too",
+				"indexed in b"
+			}
+		end)
+		describe("unpack", function ()
+			it("mimics the behavior of unpack", function ()
+				assert.Nil(flow_extras.table_join.unpack(a, b), "return")
+				assert.same({
+					unique = "to a",
+					shared = "in a",
+					"indexed in a",
+					table.unpack{ -- test against the real thing!
+						unique_to = "b",
+						shared = "in b too",
+						"indexed in b"
+					}
+				}, a, "a")
+				assert.same({
+					unique_to = "b",
+					shared = "in b too",
+					"indexed in b"
+				}, b, "b")
+			end)
+		end)
+		describe("ignore", function ()
+			it("copies all values over, unless they already exist", function ()
+				assert.Nil(flow_extras.table_join.ignore(a, b), "return")
+				assert.same({
+					unique = "to a",
+					unique_to = "b",
+					shared = "in a",
+					"indexed in a"
+				}, a, "a")
+				assert.same({
+					unique_to = "b",
+					shared = "in b too",
+					"indexed in b"
+				}, b, "b")
+			end)
+		end)
+		describe("replace", function ()
+			it("copies all values over, replacing ones that already exist", function ()
+				assert.Nil(flow_extras.table_join.replace(a, b), "return")
+				assert.same({
+					unique = "to a",
+					unique_to = "b",
+					shared = "in b too",
+					"indexed in b"
+				}, a, "a")
+				assert.same({
+					unique_to = "b",
+					shared = "in b too",
+					"indexed in b"
+				}, b, "b")
+			end)
+		end)
+		describe("unpack_ignore", function ()
+			it("appends indexes from b to a", function ()
+				assert.Nil(flow_extras.table_join.unpack_ignore(a, b), "return")
+				assert.same({
+					unique = "to a",
+					unique_to = "b",
+					shared = "in a",
+					"indexed in a",
+					"indexed in b"
+				}, a, "a")
+				assert.same({
+					unique_to = "b",
+					shared = "in b too",
+					"indexed in b"
+				}, b, "b")
+			end)
+		end)
+		describe("unpack_replace", function ()
+			it("appends indexes from b to a", function ()
+				assert.Nil(flow_extras.table_join.unpack_replace(a, b), "return")
+				assert.same({
+					unique = "to a",
+					unique_to = "b",
+					shared = "in b too",
+					"indexed in a",
+					"indexed in b"
+				}, a, "a")
+				assert.same({
+					unique_to = "b",
+					shared = "in b too",
+					"indexed in b"
+				}, b, "b")
+			end)
+		end)
+	end)
 end)
 pending"fake"
 --[[
