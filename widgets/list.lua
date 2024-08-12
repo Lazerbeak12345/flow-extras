@@ -1,5 +1,28 @@
-local flow, flow_extras = flow, flow_extras
+---@module '../../flow/init.lua'
+local flow = _G.flow --[[@as flow]]
+
+---@class flow.widgets
 local gui = flow.widgets
+
+---@class flow_extras
+local flow_extras = flow_extras
+
+---@class ThemableList_fields:flow.widgets.List_fields
+--luacheck: push no max comment line length
+---@field spacing? number The amount of space between the list tiles. Defaults to `0.25` - the same amount as minetest out of the box.
+---@field bgimg? boolean|string|(string[]) If present, applies each image in order, looping from left to right, top to bottom, on each list tile in the main list, followed by the remainder list, in the same pattern. By default, since `list[]` elements are opaque, you will not be able to see these images. Make use of `flow.widgets.Listcolors` to adjust this as needed. If `bgimg` is `false`, then no `bgimg`s are rendered. If it is `nil`, it defaults to `{ "flow_extras_list_bg.png" }`. If it is a string, it is wrapped in a table.
+--luacheck: pop
+--luacheck: push ignore ThemableList_fields
+local ThemableList_fields
+--luacheck: pop
+
+---create a list, but themable
+---
+---you'll need to make sure List tiles are transparent to see anything
+---@see flow.widgets.List
+---@see flow.widgets.Listcolors
+---@param fields ThemableList_fields
+---@return FlowTree
 local function ThemableList(fields)
 	local spacing = fields.spacing or 0.25
 	fields.spacing = nil
@@ -9,7 +32,7 @@ local function ThemableList(fields)
 		return gui.List(fields)
 	elseif not bgimg then
 		bgimg = { "flow_extras_list_bg.png" }
-	elseif type(bgimg) ~= "table" then
+	elseif type(bgimg) == "string" then
 		bgimg = { bgimg }
 	end
 	local bgimg_idx = 1 + (fields.starting_item_index or 0)
@@ -42,6 +65,20 @@ local function ThemableList(fields)
 	}
 end
 
+---@class flow_extras.List_fields:ThemableList_fields
+--luacheck: push no max comment line length
+---@field remainder? number If `true`, the remainder will be below the rest of the `list[]`. Otherwise, it is to the right.
+---@field remainder_v? boolean (Default `false`) If `true`, the remainder will be below the rest of the `list[]`. Otherwise, it is to the right.
+---@field remainder_align? FlowAlign Passed into `align_v` on a `flow.widgets.VBox` if `remainder_v` or `align_h` on a `flow.widgets.HBox` to align the remainder list.
+---@field listring? flow.widgets.Listring_fields[] A list of tables each passed to `flow.widgets.Listring`. Prepended with this `list[]`'s location and name, if provided. If not provided, `listring[]`s are not generated.
+---@field align_h? FlowAlign If there is a remainder or a listring, this is passed to the the `flow.widgets.VBox` if `remainder_v` or `flow.widgets.Hbox` that wraps the entire element. Otherwise, this element does not exist, and either a `flow.widgets.Stack` or a `flow.widgets.List` is the root.
+---@field align_v? FlowAlign If there is a remainder or a listring, this is passed to the the `flow.widgets.VBox` if `remainder_v` or `flow.widgets.Hbox` that wraps the entire element. Otherwise, this element does not exist, and either a `flow.widgets.Stack` or a `flow.widgets.List` is the root.
+--luacheck: pop
+flow_extras.List_fields = nil
+
+---a themable list with remainder support
+---@param fields flow_extras.List_fields
+---@return FlowTree
 function flow_extras.List(fields)
 	local inventory_location = fields.inventory_location
 	local list_name = fields.list_name
@@ -86,7 +123,7 @@ function flow_extras.List(fields)
 			inventory_location = inventory_location,
 			list_name = list_name,
 			w = remainder_v and remainder or 1,
-			h = remainder_v and 1         or remainder,
+			h = remainder_v and 1         or remainder or 1,
 			starting_item_index = (w * h) + (starting_item_index or 0),
 			bgimg = bgimg,
 			spacing = spacing

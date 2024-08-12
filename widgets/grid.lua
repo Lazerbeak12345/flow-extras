@@ -1,5 +1,26 @@
-local flow, flow_extras = flow, flow_extras
+---@module '../../flow/init.lua'
+local flow = _G.flow --[[@as flow]]
+
+---@class flow_extras
+local flow_extras = flow_extras
+
 local gui = flow.widgets
+
+---@class flow_extras.Grid_fields
+---@field w number number of things wide
+---@field h number number of things high
+--luacheck: push no max comment line length
+---@field VBox? flow.widgets.VBox If needed, an outer box that ensures multiple vertical things
+---@field HBox? flow.widgets.HBox If needed, a middle box that ensures multiple horizontal things
+--luacheck: pop
+---@field children_by_index? fun(index:number): FlowTree
+---@field [number] FlowTree
+---@field children_by_coords? fun(x:number, y:number): FlowTree uses children_by_index if not present
+flow_extras.Grid_fields = nil
+
+---lay out elements in a grid like pattern
+---@param fields flow_extras.Grid_fields
+---@return FlowTree
 function flow_extras.Grid(fields)
 	local w = assert(fields.w, "requires a width")
 	local h = assert(fields.h, "requires a height")

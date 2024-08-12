@@ -1,5 +1,14 @@
-local flow, minetest, flow_extras = flow, minetest, flow_extras
+---@module '../../flow/init.lua'
+local flow = _G.flow --[[@as flow]]
+
 local gui = flow.widgets
+
+---@class minetest
+local minetest = minetest
+
+---@class flow_extras
+local flow_extras = flow_extras
+
 local example_form = flow.make_gui(function ()
 	return gui.HBox{
 		gui.VBox{

@@ -1,4 +1,15 @@
-local flow_extras, formspec_ast = flow_extras, formspec_ast
+---@class flow_extras
+local flow_extras = _G.flow_extras
+
+---@package
+---@alias TruthTable table<any, boolean>
+
+---@module '../../formspec_ast/init.lua'
+local formspec_ast = _G.formspec_ast --[[@as formspec_ast]]
+
+--- Truth table of flow element types (in their lowercase format) that are considered to be walkable.
+---@see flow_extras.walk
+---@type TruthTable
 flow_extras.flow_container_elms = {
 	-- TODO: are these needed?
 	-- I'm pretty sure they don't work in flow.
@@ -8,9 +19,33 @@ flow_extras.flow_container_elms = {
 	vbox = true,
 	stack = true,
 }
+
+--- Returns an iterator, wrapping around formspec_ast.walk, using the known flow container elements instead of
+--- formspec_ast's container elements.
+---@see formspec_ast.walk
+---@param tree FlowTree
+---@return Iterator<FlowTree>
 function flow_extras.walk(tree)
 	return formspec_ast.walk(tree, flow_extras.flow_container_elms)
 end
+
+
+---Arguments given to flow_extras.search and others
+---@see flow_extras.search
+---@class flow_extras.search_Args
+---@field tree FlowTree Tree to search within
+---@field key? string Key to search for, defaulting to `"type"`
+---@field value? any Value to look for on that key. Uses equals
+--luacheck: push no max comment line length
+---@field values? any[] If flow_extras.search.Args.value not provided, any value in this is looked for instead. Uses equals
+--luacheck: pop
+---@field first_of_each? boolean Given multiple values, each value will only be found one time.
+---@field check_root? boolean Should we check the root?
+flow_extras.search_Args = nil
+
+---Return an iterator to search for matches to a pattern, given a tree.
+---@param args flow_extras.search_Args
+---@return Iterator<FlowTree>
 function flow_extras.search(args)
 	local tree = assert(args.tree, "tree must be provided")
 	local key = args.key or "type"
@@ -39,6 +74,12 @@ function flow_extras.search(args)
 		end
 	end
 end
+
+---Search for at least one match to a pattern, given a tree.
+---
+---Always stops searching after the first match.
+---@param args flow_extras.search_Args
+---@return boolean # Was anything found?
 function flow_extras.contains(args)
 	return flow_extras.search(args)() and true or false
 end

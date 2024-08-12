@@ -1,15 +1,31 @@
+--luacheck: std lua52+busted
+
+local busted = require'busted'
+
+local before_each = busted.before_each
+local describe = busted.describe
+local it = busted.it
+local pending = busted.pending
+
+local assert = busted.assert
+
+local spy = busted.spy
+
 local function nilfn() end
 local function ident(v)
 	return function ()
 		return v
 	end
 end
+
 local minetest = {
-	register_on_player_receive_fields = nilfn, register_on_leaveplayer = nilfn,
+	register_on_player_receive_fields = nilfn,
+	register_on_leaveplayer = nilfn,
 	register_chatcommand = nilfn
 }
 minetest.is_singleplayer = ident(true)
 minetest.get_translator = ident(ident)
+
 local FORMSPEC_AST_PATH = '../formspec_ast'
 _G.FORMSPEC_AST_PATH = FORMSPEC_AST_PATH
 function minetest.get_modpath(modname)
@@ -19,10 +35,17 @@ function minetest.get_modpath(modname)
 	return "."
 end
 dofile(FORMSPEC_AST_PATH .. '/init.lua')
+
 _G.minetest = minetest -- Must be defined after formspec_ast runs
+
+local flow
 dofile"../flow/init.lua"
+flow = _G.flow --[[@as flow]]
+
+local flow_extras
 dofile"init.lua"
-local flow_extras, describe, it, assert, flow = flow_extras, describe, it, assert, flow
+flow_extras = _G.flow_extras --[[@as flow_extras]]
+
 local gui = flow.widgets
 local function debug(...)
 	for _, item in ipairs{ ... } do
@@ -182,7 +205,7 @@ describe("List", function ()
 						gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 2, starting_item_index = 6 }
 					}
 				},
-			}, flow_extras.List{
+			}, (flow_extras.List --[[@as fun(t:any)]]){
 				inventory_location = "a",
 				list_name = "b",
 				w = 3,
@@ -227,7 +250,7 @@ describe("List", function ()
 						gui.List{ inventory_location = "a", list_name = "b", w = 2, h = 1, starting_item_index = 6 }
 					}
 				},
-			}, flow_extras.List{
+			}, (flow_extras.List --[[@as fun(t:any)]]){
 				inventory_location = "a",
 				list_name = "b",
 				w = 3, h = 2,
@@ -258,7 +281,7 @@ describe("List", function ()
 						gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1, starting_item_index = 1 }
 					}
 				}
-			}, flow_extras.List{
+			}, (flow_extras.List --[[@as fun(t:any)]]){
 				inventory_location = "a",
 				list_name = "b",
 				w = 1, h = 1,
@@ -288,7 +311,7 @@ describe("List", function ()
 						gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 1, starting_item_index = 1 }
 					}
 				}
-			}, flow_extras.List{
+			}, (flow_extras.List --[[@as fun(t:any)]]){
 				inventory_location = "a",
 				list_name = "b",
 				w = 1, h = 1,
@@ -357,7 +380,12 @@ describe("List", function ()
 					gui.Image{ w = 1, h = 1, texture_name = "c" }
 				},
 				gui.List{ inventory_location = "a", list_name = "b", w = 1, h = 2 },
-			}, flow_extras.List{ inventory_location = "a", list_name = "b", w = 1, h = 2, bgimg = { false, "c" } })
+			}, (flow_extras.List --[[@as fun(t:any)]]){
+				inventory_location = "a",
+				list_name = "b",
+				w = 1, h = 2,
+				bgimg = { false, "c" }
+			})
 		end)
 	end)
 	it("supports spacing variables", function ()
@@ -417,17 +445,17 @@ describe("Grid", function ()
 	describe("error cases", function ()
 		it("requires a height", function ()
 			assert.has.errors(function ()
-				flow_extras.Grid{ w = 0 }
+				(flow_extras.Grid --[[@as fun(t:any)]]){ w = 0 }
 			end)
 		end)
 		it("requires a width", function ()
 			assert.has.errors(function ()
-				flow_extras.Grid{ h = 0 }
+				(flow_extras.Grid --[[@as fun(t:any)]]){ h = 0 }
 			end)
 		end)
 		it("requires a width and a height", function ()
 			assert.has.errors(function ()
-				flow_extras.Grid{}
+				(flow_extras.Grid --[[@as fun(t:any)]]){}
 			end)
 		end)
 	end)
@@ -530,10 +558,10 @@ describe("Grid", function ()
 				gui.Label{ label = "b" }
 			}, flow_extras.Grid{
 				w = 1, h = 2,
-				VBox = function (children)
+				VBox = (function (children)
 					children.a = 1
 					return gui.VBox(children)
-				end,
+				end --[[@as fun(t:any)]]),
 				gui.Label{ label = "a" },
 				gui.Label{ label = "b" }
 			})
@@ -545,10 +573,10 @@ describe("Grid", function ()
 				gui.Label{ label = "b" }
 			}, flow_extras.Grid{
 				w = 2, h = 1,
-				HBox = function (children)
+				HBox = (function (children)
 					children.a = 1
 					return gui.HBox(children)
-				end,
+				end --[[@as fun(t:any)]]),
 				gui.Label{ label = "a" },
 				gui.Label{ label = "b" }
 			})
@@ -568,14 +596,14 @@ describe("Grid", function ()
 				}
 			}, flow_extras.Grid{
 				w = 2, h = 2,
-				VBox = function (children)
+				VBox = (function (children)
 					children.a = 1
 					return gui.VBox(children)
-				end,
-				HBox = function (children)
+				end --[[@as fun(t:any)]]),
+				HBox = (function (children)
 					children.b = 4
 					return gui.HBox(children)
-				end,
+				end --[[@as fun(t:any)]]),
 				gui.Label{ label = "a" },
 				gui.Label{ label = "b" },
 				gui.Label{ label = "c" },
@@ -706,7 +734,7 @@ describe("tools", function ()
 		end)
 		it("errors out if tree is not provided", function ()
 			assert.has_error(function ()
-				flow_extras.search{
+				(flow_extras.search --[[@as fun(t:any)]]){
 					value = "hi"
 				}
 			end, "tree must be provided")
@@ -757,7 +785,7 @@ describe("tools", function ()
 		end)
 		it("can walk over the first instance of everything", function ()
 			local tree = {
-				gui.Asdf{},
+				(gui.Asdf --[[@as fun(t:any)]]){},
 				gui.Box{ color = "green" },
 				gui.Label{ label = "the text" },
 				gui.Label{ label = "the text" },
@@ -771,7 +799,7 @@ describe("tools", function ()
 				node.visited = true
 			end
 			assert.same({
-				gui.Asdf{ visited = true },
+				(gui.Asdf --[[@as fun(t:any)]]){ visited = true },
 				gui.Box{ color = "green" },
 				gui.Label{ label = "the text", visited = true },
 				gui.Label{ label = "the text" },
@@ -828,7 +856,7 @@ describe("tools", function ()
 		end)
 		it("errors if tree is not provided", function ()
 			assert.has_error(function ()
-				flow_extras.contains{
+				(flow_extras.contains --[[@as fun(t:any)]]){
 					value = "hi"
 				}
 			end)
@@ -957,20 +985,20 @@ describe("tools", function ()
 			describe("arguments", function ()
 				it("both are required", function ()
 					assert.has.errors(function ()
-						flow_extras.set_wrapped_context()
+						(flow_extras.set_wrapped_context --[[@as fun()]])()
 					end, "[flow_extras] set_wrapped_context requires two arguments", "neither")
 					assert.has.errors(function ()
-						flow_extras.set_wrapped_context({})
+						(flow_extras.set_wrapped_context --[[@as fun(t:any)]]){}
 					end, "[flow_extras] set_wrapped_context requires two arguments", "jst one")
 				end)
 				it("first must be table", function ()
 					assert.has.errors(function ()
-						flow_extras.set_wrapped_context(function () end, function () end)
+						(flow_extras.set_wrapped_context --[[@as fun(a:any,b:any)]])(function () end, function () end)
 					end, "[flow_extras] set_wrapped_context the first argument must be a table")
 				end)
 				it("second must be function", function ()
 					assert.has.errors(function ()
-						flow_extras.set_wrapped_context({}, true)
+						(flow_extras.set_wrapped_context --[[@as fun(a:any,b:any)]])({}, true)
 					end, "[flow_extras] set_wrapped_context the second argument must be a function")
 				end)
 			end)
@@ -1026,7 +1054,7 @@ describe("tools", function ()
 			local result = gui.VBox{
 				gui.Nil{},
 				table.unpack(
-					flow_extras.For(ipairs(things))(function (_index, value)
+					flow_extras.For(ipairs(things))(function (_, value)
 						return gui.Button{ label = value }
 					end)
 				)
@@ -1043,7 +1071,7 @@ describe("tools", function ()
 			local result = gui.VBox{
 				gui.Nil{},
 				table.unpack(
-					flow_extras.For(pairs(things))(function (_key, value)
+					flow_extras.For(pairs(things))(function (_, value)
 						return gui.Button{ label = value }
 					end)
 				)
@@ -1061,7 +1089,7 @@ describe("tools", function ()
 			local result = gui.VBox{
 				gui.Nil{},
 				table.unpack(
-					flow_extras.For(next, things)(function (_key, value)
+					flow_extras.For(next, things)(function (_, value)
 						return gui.Button{ label = value }
 					end)
 				)
