@@ -6,6 +6,6 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: lint
-        uses: Roang-zero1/factorio-mod-luacheck@master
+        uses: lunarmodules/luacheck@master
         with:
           luacheckrc_url: ""
