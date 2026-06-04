@@ -984,8 +984,7 @@ describe("tools", function ()
 		end)
 	end)
 end)
-pending"fake"
---[[
+pending"fake" do --[[
 describe("fake", function ()
 	it("is a table on flow_extras", function ()
 		assert.are.equal("table", type(flow_extras.fake))
@@ -1044,3 +1043,108 @@ describe("fake", function ()
 		pending"left and right arrows for overflow (even though I could do better)"
 	end)
 end)]]
+end
+describe("responsive", function ()
+	it("is a table on flow_extras", function ()
+		assert.equal("table", type(flow_extras.responsive))
+	end)
+	describe("OverrideMaxFormspecSize", function ()
+		pending"is a function on the responsive table"
+		--pending"has a max_formspec_size argument"
+		pending"defaults to the table of the same name from core.get_player_window_information"
+		pending"the rootmost Container wraps itself in this automatically"
+		pending"it accepts a single child element and passes it through"
+	end)
+	describe("current_breakpoint", function ()
+		pending"is a function on the responsive table"
+		pending"returns the current breakpoint string"
+	end)
+	describe("is_at_least", function ()
+		pending"is a function on the responsive table"
+		pending"takes a string as arg only"
+		pending"takes only breakpoint names as args"
+		pending"returns true if we are at least at a specific breakpoint"
+	end)
+	describe("is_at_within", function ()
+		pending"is a function on the responsive table"
+		pending"takes a string as arg only"
+		pending"takes only breakpoint names as args"
+		pending"returns true if we are within or at a specific breakpoint"
+	end)
+	-- TODO: it'd be nice to make the breakpoints server-configurable
+	describe("container_w", function ()
+		pending"is a function on the responsive table"
+		describe("has optional max_formspec_size argument", function ()
+			pending"defaults to the table of the same name from core.get_player_window_information"
+			pending"causes container_w to return a number no greater than the x value"
+		end)
+		describe("optional fluid argument", function ()
+			pending"if absent, rounds to nearest breakpoint container size"
+			pending"if true, the container has full width"
+			pending"if xs it's full width till past xs, then rounds"
+			pending"if sm it's full width till past sm, then rounds"
+			pending"if md it's full width till past md, then rounds"
+			pending"if lg it's full width till past lg, then rounds"
+			pending"if xl it's full width till past xl, then rounds"
+			pending"if xxl it's full width till past xxl, then rounds"
+			pending"if none of the other values, errors"
+		end)
+	end)
+	describe("Container", function ()
+		pending"is a function on the responsive table"
+		-- TODO: allow all children to be Cols instead. This would behave like flex-direction: col
+		pending"errors if children are not all rows"
+		pending"renders as a VBox inside of an HBox"
+		pending"hbox_keys is a table where all keys are passed through to the hbox"
+		pending"unknown keys are passed through to the vbox"
+		describe("max_w", function ()
+			--pending"serves as a maximum in inventory tile units if an integer"
+			--pending"it also accepts the result of a container_w call"
+			pending"if it's a table, Container calls container_w with that table"
+			pending"errors if it is not a table"
+		end)
+	end)
+	describe("Row", function ()
+		pending"is a function on the responsive table"
+		pending"errors if called outside of a Container by throwing when .type is accessed"
+		pending"errors if children are not all cols"
+		pending"it renders as a HBox if empty"
+		pending(
+			"if total columns add to > 100% of Container max_w then it causes Row to render as more than one HBox (containing"
+			.." the wrapped elements) wrapping at the overflow point"
+		)
+		-- TODO: css flexbox stuff
+	end)
+	describe("col_w", function ()
+		pending"is a function on the responsive table"
+		pending"returns the number of inventory tiles wide a Col should be"
+		pending"errors if not one of the breakpoint arguments is provided"
+		pending"takes an optional xs argument"
+		pending"takes an optional sm argument"
+		pending"takes an optional md argument"
+		pending"takes an optional lg argument"
+		pending"takes an optional xl argument"
+		pending"takes an optional xxl argument"
+		describe("values", function ()
+			pending"errors if not a string"
+			pending"errors if not a string ending with /12"
+			pending"errors if the string before the / is not an integer"
+			pending"describes the size in 12ths of the Container's content width"
+		end)
+	end)
+	describe("Col", function ()
+		pending"is a function on the responsive table"
+		pending"errors if called outside of a Row by throwing when .type is accessed"
+		describe("w", function ()
+			pending"if it's a table, Col calls col_w with that table"
+			pending"errors if it is not a table"
+		end)
+		describe("takes an optional order argument", function ()
+			pending"if not provided, is sorted to be first within the row"
+			pending"if provided, it must be an integer"
+			pending"if provided, values are sorted increasing (but after one not provided)"
+			pending"items with the same order revert to source order"
+		end)
+		pending"it renders as a VBox"
+	end)
+end)

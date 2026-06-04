@@ -4,4 +4,5 @@ _G.flow_extras = flow_extras
 dofile(modpath .. "/tools.lua")
 dofile(modpath .. "/widgets/grid.lua")
 dofile(modpath .. "/widgets/list.lua")
+dofile(modpath .. "/widgets/responsive.lua")
 --dofile(modpath .. "/demo/init.lua")
