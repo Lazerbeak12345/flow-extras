@@ -37,6 +37,7 @@ end
 dofile(FORMSPEC_AST_PATH .. '/init.lua')
 
 _G.minetest = minetest -- Must be defined after formspec_ast runs
+_G.core = minetest
 
 local flow
 dofile"../flow/init.lua"
@@ -916,7 +917,7 @@ describe("tools", function ()
 			assert.equal("function", type(flow_extras.set_wrapped_context))
 			assert.equal("function", type(flow_extras.get_context))
 		end)
-		local function _requires_flow_get_context(context, callback)
+		local function _requires_flow_get_context(context, player, callback)
 			-- flow.get_context is experimental. we can't rely on it since it's undocumented.
 			assert.is.same(
 				"function",
@@ -927,7 +928,7 @@ describe("tools", function ()
 			flow.get_context = nil
 			assert(not flow.get_context, "flow-extras is outdated, get_context works differently now")
 			flow.get_context = function ()
-				return context
+				return context, player
 			end
 			callback()
 			flow.get_context = old_flow_get_context
@@ -946,7 +947,7 @@ describe("tools", function ()
 				local f_ctx = {}
 				local w_ctx = {}
 				spy.on(minetest, "log")
-				_requires_flow_get_context(f_ctx, function ()
+				_requires_flow_get_context(f_ctx, {--[[player]]}, function ()
 					local before_ctx = flow_extras.get_context()
 					assert.same(f_ctx, before_ctx)
 					assert.equal(f_ctx, before_ctx)
@@ -966,10 +967,56 @@ describe("tools", function ()
 					"[flow_extras] you can't use set_wrapped_context to replace or override the context"
 				)
 			end)
+			it("returns what flow provides and ignores a set (yes flow, yes wrap, but they differ) with player", function ()
+				local f_ctx = {}
+				local f_player = {}
+				function f_player.is_player() return true end
+				local w_ctx = {}
+				local w_player = { is_player = f_player.is_player }
+				spy.on(minetest, "log")
+				_requires_flow_get_context(f_ctx, f_player, function ()
+					local before_ctx, before_player = flow_extras.get_context()
+					assert.same(f_ctx, before_ctx)
+					assert.equal(f_ctx, before_ctx)
+					assert.same(f_player, before_player)
+					assert.equal(f_player, before_player)
+					flow_extras.set_wrapped_context(w_ctx, w_player, function ()
+						local actual_ctx, actual_player = flow_extras.get_context()
+						assert.same(f_ctx, actual_ctx, "the f_ctx = actual_ctx")
+						assert.same(f_player, actual_player, "the f_player = actual_player")
+						assert.same(w_ctx, actual_ctx, "the w_ctx = actual_ctx")
+						assert.same(w_player, actual_player, "the w_player = actual_player")
+						assert.are_not.equal(w_ctx, actual_ctx)
+						assert.are_not.equal(w_player, actual_player)
+					end)
+					local after_ctx, after_player = flow_extras.get_context()
+					assert.same(f_ctx, after_ctx)
+					assert.equal(f_ctx, after_ctx)
+					assert.same(f_player, after_player)
+					assert.equal(f_player, after_player)
+				end)
+				assert.spy(minetest.log).was_called_with(
+					"warning",
+					"[flow_extras] you can't use set_wrapped_context to replace or override the context"
+				)
+			end)
 			it("logs a warning if called within itself", function ()
 				spy.on(minetest, "log")
 				flow_extras.set_wrapped_context({}, function ()
 					return flow_extras.set_wrapped_context({}, function ()
+						return gui.Label{ label = "hi" }
+					end)
+				end)
+				assert
+					.spy(minetest.log)
+					.was_called_with("warning", "[flow_extras] set_wrapped_context was called within itself (recursive).")
+			end)
+			it("logs a warning if called within itself with player", function ()
+				spy.on(minetest, "log")
+				local fake_player = {}
+				function fake_player.is_player() return true end
+				flow_extras.set_wrapped_context({}, fake_player, function ()
+					return flow_extras.set_wrapped_context({}, { is_player=fake_player.is_player }, function ()
 						return gui.Label{ label = "hi" }
 					end)
 				end)
@@ -982,24 +1029,48 @@ describe("tools", function ()
 					return gui.Label{ label = "hi" }
 				end), gui.Label{ label = "hi" })
 			end)
+			it("returns the callback return with player", function ()
+				local fake_player = {}
+				function fake_player.is_player() return true end
+				assert.same(flow_extras.set_wrapped_context({}, fake_player, function ()
+					return gui.Label{ label = "hi" }
+				end), gui.Label{ label = "hi" })
+			end)
 			describe("arguments", function ()
-				it("both are required", function ()
+				local fake_player = {}
+				function fake_player.is_player() return true end
+				it("at least two are required", function ()
 					assert.has.errors(function ()
 						(flow_extras.set_wrapped_context --[[@as fun()]])()
-					end, "[flow_extras] set_wrapped_context requires two arguments", "neither")
+					end, "[flow_extras] set_wrapped_context requires two or three arguments", "neither")
 					assert.has.errors(function ()
 						(flow_extras.set_wrapped_context --[[@as fun(t:any)]]){}
-					end, "[flow_extras] set_wrapped_context requires two arguments", "jst one")
+					end, "[flow_extras] set_wrapped_context requires two or three arguments", "jst one")
 				end)
-				it("first must be table", function ()
+				it("if two first must be table", function ()
 					assert.has.errors(function ()
 						(flow_extras.set_wrapped_context --[[@as fun(a:any,b:any)]])(function () end, function () end)
 					end, "[flow_extras] set_wrapped_context the first argument must be a table")
 				end)
-				it("second must be function", function ()
+				it("if two second must be function", function ()
 					assert.has.errors(function ()
 						(flow_extras.set_wrapped_context --[[@as fun(a:any,b:any)]])({}, true)
 					end, "[flow_extras] set_wrapped_context the second argument must be a function")
+				end)
+				it("if three first must be table", function ()
+					assert.has.errors(function ()
+						(flow_extras.set_wrapped_context --[[@as fun(a:any,b:any,c:any)]])(function () end, fake_player, function () end)
+					end, "[flow_extras] set_wrapped_context the first argument must be a table")
+				end)
+				it("if three second must be table", function ()
+					assert.has.errors(function ()
+						(flow_extras.set_wrapped_context --[[@as fun(a:any,b:any,c:any)]])({}, {}, function () end)
+					end, "[flow_extras] set_wrapped_context with three arguments, the second argument must be a player")
+				end)
+				it("if three third must be function", function ()
+					assert.has.errors(function ()
+						(flow_extras.set_wrapped_context --[[@as fun(a:any,b:any,c:any)]])({}, fake_player, {})
+					end, "[flow_extras] set_wrapped_context with three arguments, the third argument must be a function")
 				end)
 			end)
 		end)
@@ -1014,9 +1085,21 @@ describe("tools", function ()
 			--__
 			it("yes flow yes wrap (and they are the same)", function ()
 				local a = {}
-				_requires_flow_get_context(a, function ()
+				_requires_flow_get_context(a, nil, function ()
 					flow_extras.set_wrapped_context(a, function ()
 						assert.equal(a, flow_extras.get_context())
+					end)
+				end)
+			end)
+			it("yes flow yes wrap (and they are the same) with player", function ()
+				local a = {}
+				local b = {}
+				function b.is_player() return true end
+				_requires_flow_get_context(a, b, function ()
+					flow_extras.set_wrapped_context(a, b, function ()
+						local internal_a, internal_b = flow_extras.get_context()
+						assert.same(a, internal_a)
+						assert.same(b, internal_b)
 					end)
 				end)
 			end)
@@ -1030,18 +1113,41 @@ describe("tools", function ()
 					end)
 				end)
 			end)
+			it("yes wrap no flow works with player", function ()
+				local a = {}
+				local b = {}
+				function b.is_player() return true end
+				_requires_flow_get_context_is_gone(function ()
+					flow_extras.set_wrapped_context(a, b, function ()
+						local internal_a, internal_b = flow_extras.get_context()
+						assert.same(a, internal_a)
+						assert.same(b, internal_b)
+					end)
+				end)
+			end)
 			-- #_
 			-- __
 			it("yes flow no wrap works", function ()
 				local a = {}
-				_requires_flow_get_context(a, function ()
-					assert.equal(a, flow_extras.get_context())
+				_requires_flow_get_context(a, nil, function ()
+					assert.equal(a, flow_extras.get_context(), "context")
+				end)
+			end)
+			it("yes flow no wrap works with player", function ()
+				local a = {}
+				local b = {}
+				_requires_flow_get_context(a, b, function ()
+					local internal_a, internal_b = flow_extras.get_context()
+					assert.same(a, internal_a, "context")
+					assert.same(b, internal_b, "player")
 				end)
 			end)
 			-- __
 			-- #_
 			it("no flow no wrap returns nil", function ()
-				assert.same(nil, flow_extras.get_context())
+				local internal_a, internal_b = flow_extras.get_context()
+				assert.same(nil, internal_a)
+				assert.same(nil, internal_b)
 			end)
 		end)
 	end)

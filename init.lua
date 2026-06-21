@@ -154,8 +154,9 @@ local minetest = _G.minetest --[[@as minetest]]
 
 ---@package
 ---@generic X:table
+---@generic Y:userdata
 ---@class flow
----@field get_context nil|fun(): `X`
+---@field get_context nil|fun(): X, Y
 ---@field widgets flow.widgets
 ---@field make_gui fun():flow.Flow
 ---@module '../../flow/init.lua'
