@@ -1,25 +1,39 @@
-on: [push, pull_request]
+on:
+  push:
+    branches: [master]
+    paths-ignore: &paths-ignore
+      - '**.md'
+      - 'LICENSE'
+      - '**.sh'
+      - '**.png'
+  pull_request:
+    branches: [master]
+    paths-ignore: *paths-ignore
 name: busted
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
         with:
           repository: luk3yx/minetest-formspec_ast
           path: formspec_ast
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
         with:
           repository: luk3yx/minetest-flow
           path: flow
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
         with:
           path: flow-extras
 
-      - uses: leafo/gh-actions-lua@v9
-      - uses: leafo/gh-actions-luarocks@v4
+      - uses: leafo/gh-actions-lua@v13
+      - uses: leafo/gh-actions-luarocks@v6
       - name: setup deps
         run: |
           luarocks install busted
@@ -40,4 +54,4 @@ jobs:
           # Keep above in sync with ./run-tests
           popd
         env:
-          COVERALLS_REPO_TOKEN: ${{ github.token }}
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}

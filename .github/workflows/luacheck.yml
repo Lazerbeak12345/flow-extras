@@ -1,11 +1,24 @@
-on: [push, pull_request]
+on:
+  push:
+    branches: [master]
+    paths-ignore: &paths-ignore
+      - '**.md'
+      - 'LICENSE'
+      - '**.sh'
+      - '**.png'
+  pull_request:
+    branches: [master]
+    paths-ignore: *paths-ignore
 name: luacheck
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v7
       - name: lint
-        uses: lunarmodules/luacheck@master
+        uses: lunarmodules/luacheck@v1
         with:
           luacheckrc_url: ""
