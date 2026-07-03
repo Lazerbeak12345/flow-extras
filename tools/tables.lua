@@ -1,6 +1,8 @@
 ---@class flow_extras
 local flow_extras = flow_extras
 
+local unpack = table.unpack or unpack
+
 ---Given for-style iterator args, retun a function expecting a callback called with the same params as a for loop.
 ---
 ---```lua
@@ -37,7 +39,7 @@ function flow_extras.For(iterator, invariant, control)
 			if not control then
 				break
 			end
-			accumulator[#accumulator+1] = callback(table.unpack(iteration_result))
+			accumulator[#accumulator+1] = callback(unpack(iteration_result))
 		end
 		return accumulator
 	end

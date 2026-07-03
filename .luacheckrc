@@ -4,7 +4,8 @@
 globals = {
     'formspec_ast',
     'flow',
-    'flow_extras'
+    'flow_extras',
+    'unpack'
 }
 
 --read_globals = {
